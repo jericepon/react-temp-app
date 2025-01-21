@@ -1,8 +1,10 @@
+import { Outlet } from "react-router"
+
 function App() {
   return (
-    <>
-      <h1 className="bg-primary text-secondary">Test</h1>
-    </>
+    <div className="App">
+      <Outlet />
+    </div>
   )
 }
 
