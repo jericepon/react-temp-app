@@ -1,21 +1,26 @@
-import { createContext, useContext } from "react";
+import { useState } from "react";
 
 export type ModalObjectType = {
   UID?: string;
   children?: React.ReactNode;
 };
 
-export type ModalContextType = {
-  openModal: (obj: ModalObjectType) => void;
-};
+export interface UseModal {
+  list: ModalObjectType[];
+  open: (obj: ModalObjectType) => void;
+  close: (UID: string) => void;
+}
 
-export const ModalContext = createContext<ModalContextType | undefined>(undefined);
+export const useModal: () => UseModal = () => {
+  const [list, setList] = useState<ModalObjectType[]>([])
 
-export const useModal = () => {
-  const context = useContext(ModalContext);
-  if (!context)
-  {
-    throw new Error("useModal must be used within a ModalProvider");
+  const open = (obj: ModalObjectType) => {
+    setList((prev) => [...prev, { ...obj, open: true, UID: Date.now().toString() }])
   }
-  return context;
+
+  const close = (UID: string) => {
+    setList((prev) => prev.filter((modal) => modal.UID !== UID))
+  }
+
+  return { list, open, close }
 }

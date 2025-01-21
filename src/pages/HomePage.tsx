@@ -1,12 +1,15 @@
-import { useModal } from '@/hooks/useModal'
-import React from 'react'
+import { useUI } from "@/hooks/useUI"
+
 
 const HomePage = () => {
-  const { openModal } = useModal()
+  const { modal, toast } = useUI()
+
   return (
     <>
+      <button onClick={() => modal.open({ children: <p>test</p> })}>Open modal</button>
+      <br />
+      <button onClick={() => toast.show({ type: 'success', title: 'Success', message: 'The quick brown fox' })}>Open toast</button>
       <div>HomePage</div>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => openModal({ children: <p>Test content</p> })}>Open the parent modal</button>
     </>
   )
 }
