@@ -1,13 +1,10 @@
-import Pizza from '@/assets/pizza.svg'
+import NavBar from './components/NavBar'
 
 function App() {
   return (
-    <>
-      <div className="flex">
-      <img src={Pizza} />
-      <div>React Pizza</div>
-      </div>
-    </>
+    <main className="bg-muted min-h-screen">
+      <NavBar />
+    </main>
   )
 }
 
