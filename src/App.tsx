@@ -1,9 +1,16 @@
+import Pizza from '@/assets/pizza.svg'
+
 function App() {
   return (
     <>
-      <h1 className="bg-primary text-secondary">Test</h1>
+      <div className="flex">
+      <img src={Pizza} />
+      <div>React Pizza</div>
+      </div>
     </>
   )
 }
+
+
 
 export default App

@@ -6,6 +6,10 @@ export default {
     "./*.html",
   ],
   theme: {
+    fontFamily: {
+      'serif': ['Montserrat', 'Chewy'],
+      'display': ['Chewy'],
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
