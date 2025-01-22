@@ -1,5 +1,3 @@
-import { Button } from '@/components/ui/button'
-import React from 'react'
 import MenuItem from './MenuItem'
 
 const Menu = () => {

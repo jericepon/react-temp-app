@@ -1,9 +1,8 @@
-import { NavLink, useNavigate } from 'react-router'
+import { NavLink } from 'react-router'
 import Pizza from '../assets/pizza.svg'
 import { Input } from './ui/input'
 import { ModeToggle } from './ui/mode-toggle'
 const NavBar = () => {
-  const navigate = useNavigate()
   return (
     <header color='primary' className="border bg-primary border-none rounded-none fixed w-full z-10">
       <nav className="flex justify-between items-center p-4">
