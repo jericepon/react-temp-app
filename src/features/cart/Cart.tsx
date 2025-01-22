@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 const Cart = () => {
   return (
-    <>
+    <div className="page-inner">
       {/* Back link */}
       <Link to="/" className="text-blue-500 mb-4">
         &larr; Back to Home
@@ -20,7 +20,7 @@ const Cart = () => {
           Clear cart
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

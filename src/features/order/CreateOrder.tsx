@@ -5,8 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 const CreateOrder = () => {
   return (
     <>
-      <form className="mt-6 mx-auto max-w-3xl space-y-6">
-        <h1 className="text-xl font-bold">Ready to order? Let's go!</h1>
+      <form className="page-inner space-y-6">
+        <h1 className="page-title">Ready to order? Let's go!</h1>
         <div className="flex items-center">
           <div className="min-w-44">
             First Name
@@ -37,8 +37,9 @@ const CreateOrder = () => {
             Make your order a priority?
           </label>
         </div>
-        <Button className="mt-4 rounded-full uppercase font-bold">
-          Order now from ₱500
+        <Button disabled className="mt-4 rounded-full uppercase font-bold">
+          {/* <span>Order now from ₱500</span> */}
+          <span>Placing order...</span>
         </Button>
       </form>
     </>

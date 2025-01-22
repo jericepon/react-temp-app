@@ -8,11 +8,10 @@ import { createBrowserRouter } from "react-router";
 
 const router = createBrowserRouter([
   {
-    path: "/",
     Component: DefaultLayout,
     children: [
       {
-        path: "",
+        path: "/",
         Component: HomePage,
       },
       {

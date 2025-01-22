@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 
 const Menu = () => {
   return (
-    <div className="flex flex-col items-center text-center space-y-4">
+    <div className="page-inner flex flex-col items-center text-center space-y-4">
       {
         Array.from({ length: 5 }).map((_, index) => (<Menu.Item key={index} />))
       }
@@ -13,7 +13,7 @@ const Menu = () => {
 Menu.Item = () => {
   return (
     <div className="group flex w-full">
-      <div className="max-w-[150px] grow">
+      <div className="max-w-[100px] grow">
         <img src="https://ui-avatars.com/api/?name=React+Pizza" alt="Pizza" className='w-full' />
       </div>
       <div className="flex flex-col text-left ml-4">
