@@ -8,8 +8,12 @@ export default {
   theme: {
     fontFamily: {
       serif: [
+        'Fira Code',
+        'serif'
+      ],
+      sans: [
         'Montserrat',
-        'Chewy'
+        'sans-serif'
       ],
       display: [
         'Chewy'
