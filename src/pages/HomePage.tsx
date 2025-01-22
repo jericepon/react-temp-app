@@ -4,9 +4,9 @@ import { Input } from '@/components/ui/input'
 const HomePage = () => {
   return (
     <div className='flex flex-1 grow justify-center items-center'>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center md:pb-60 lg:pb-96">
         <h1 className='text-3xl font-display tracking-widest'>The best pizza.</h1>
-        <div className='text-4xl mt-4 text-primary font-semibold text-yellow-600'>Straight out the oven, straight to you.</div>
+        <div className='text-4xl mt-4 text-primary font-semibold text-primary'>Straight out the oven, straight to you.</div>
         <div className='text-lg mt-6'>
           Welcome!, Please start by telling us your name:
         </div>
