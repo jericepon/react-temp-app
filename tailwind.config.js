@@ -15,6 +15,11 @@ export default {
         'Chewy'
       ]
     },
+    screens: {
+      'sm': '900px',
+      'md': '1280px',
+      'lg': '1440px',
+    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',

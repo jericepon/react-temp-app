@@ -9,7 +9,7 @@ const NavBar = () => {
           <img src={Pizza} className='w-[40px]' />
           <div className='ml-2 tracking-wider font-semibold'>React Pizza Co.</div>
         </div>
-        <Input className='bg-yellow-300 text-primary-foreground border-none ring-0 focus-visible:ring-transparent max-w-[400px]' />
+        <Input placeholder='Search order #' className='bg-yellow-300 text-primary-foreground border-none ring-0 focus-visible:ring-transparent max-w-[400px]' />
         <ModeToggle />
       </nav>
     </header>
