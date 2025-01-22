@@ -14,7 +14,7 @@ const Cart = () => {
         ))}
       </div>
       {/* Order action buttons */}
-      <div className="flex space-x-4 mt-4">
+      <div className="flex space-x-4 mt-6">
         <Button className="uppercase font-bold">Order Pizzas</Button>
         <Button variant={"outline"} className="uppercase text-muted-foreground">
           Clear cart

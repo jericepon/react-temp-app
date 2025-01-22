@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useParams } from "react-router";
 
 const Order = () => {
@@ -45,6 +46,10 @@ const Order = () => {
             <div className="font-bold">₱49.95</div>
           </div>
         </div>
+        <Button className="mt-4 rounded-full uppercase font-bold float-right">
+          <span>Make priority</span>
+          {/* <span>Placing order...</span> */}
+        </Button>
       </div>
     </>
   );
