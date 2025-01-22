@@ -6,6 +6,9 @@ export default {
     "./*.html",
   ],
   theme: {
+    container: {
+      center: true,
+    },
     fontFamily: {
       serif: [
         'Fira Code',
