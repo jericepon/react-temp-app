@@ -1,7 +1,8 @@
 import Cart from "@/features/cart/Cart";
 import Menu, { loader as menuLoader } from "@/features/menu/Menu";
 import CreateOrder from "@/features/order/CreateOrder";
-import Order from "@/features/order/Order";
+import Order, { loader as orderLoader } from "@/features/order/Order";
+import OrderNotFound from "@/features/order/OrderNotFound";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorPage from "@/pages/ErrorPage";
 import HomePage from "@/pages/HomePage";
@@ -33,6 +34,8 @@ const router = createBrowserRouter([
       {
         path: "order/:orderId",
         Component: Order,
+        ErrorBoundary: OrderNotFound as ComponentType,
+        loader: orderLoader
       },
     ],
   },

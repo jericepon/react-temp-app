@@ -11,7 +11,7 @@ const DefaultLayout = () => {
       <div className="flex flex-col h-screen">
         <NavBar />
         <main className="flex grow pt-[72px] pb-[56px]">
-          <div className="container p-4">
+          <div className="flex flex-col container grow p-4">
             <Outlet />
           </div>
         </main>
