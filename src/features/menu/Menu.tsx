@@ -22,9 +22,11 @@ Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
   const { name, ingredients, imageUrl, soldOut, unitPrice } = pizza;
   return (
     <div
-      className={`group flex w-full border-b py-2 first:pt-0 ${soldOut ? "filter grayscale" : ""}`}
+      className={`group flex flex-wrap sm:flex-nowrap w-full border-b py-2 first:pt-0 ${
+        soldOut ? "filter grayscale" : ""
+      }`}
     >
-      <div className="max-w-[100px] grow">
+      <div className="max-w-[70px] sm:max-w-[100px] grow">
         <img src={imageUrl} alt="Pizza" className="w-full" />
       </div>
       <div className="flex flex-col text-left ml-4">
@@ -50,11 +52,11 @@ Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
         </div>
       </div>
       <div
-        className={`flex ml-auto items-center justify-end min-w-[200px] space-x-4 ${
+        className={`flex sm:ml-auto items-center justify-between w-full sm:justify-end min-w-[200px] space-x-4 mt-4 sm:mt-0 ${
           soldOut ? "hidden" : ""
         }`}
       >
-        <div className="hidden group-hover:block">
+        <div className="md:hidden md:group-hover:block">
           <Cart.QuintityInput />
         </div>
         <Button className="uppercase font-bold">Add to cart</Button>

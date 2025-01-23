@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
 
 const Cart = () => {
+  const { cartList } = useSelector((state: RootState) => state.cart);
+
+  console.log(cartList);
+  
+
   return (
     <div className="page-inner">
       {/* Back link */}

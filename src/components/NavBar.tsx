@@ -1,8 +1,12 @@
 import SearchOrder from "@/features/order/SearchOrder";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router";
 import Pizza from "../assets/pizza.svg";
-import { ModeToggle } from "./ui/mode-toggle";
+import UserName from "./Username";
+
 const NavBar = () => {
+  const user = useSelector((state: RootState) => state.user);
   return (
     <header
       color="primary"
@@ -16,9 +20,7 @@ const NavBar = () => {
         <div className="max-w-[400px] w-full md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
           <SearchOrder />
         </div>
-        <div className="min-w-[40px]">
-          <ModeToggle />
-        </div>
+        <UserName username={user.username} />
       </nav>
     </header>
   );
