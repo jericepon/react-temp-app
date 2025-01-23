@@ -13,7 +13,7 @@ const SearchOrder = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[400px] w-full">
+    <form onSubmit={handleSubmit} className="w-full">
       <Input
         placeholder="Search order #"
         className="bg-yellow-300 text-primary-foreground border-none ring-0 focus-visible:ring-transparent"
