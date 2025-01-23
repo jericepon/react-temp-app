@@ -1,34 +1,71 @@
+import API from "@/api";
 import { Button } from "@/components/ui/button";
+import { MenuItem } from "@/types/menu";
+import { useLoaderData } from "react-router";
+import Cart from "../cart/Cart";
 
 const Menu = () => {
+  const menu = useLoaderData();
+  const { data } = menu;
+  const menuItems: MenuItem[] = data;
+
   return (
-    <div className="page-inner flex flex-col items-center text-center space-y-4">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Menu.Item key={index} />
+    <div className="page-inner flex flex-col items-center text-center">
+      {menuItems.map((menuItem) => (
+        <Menu.Item key={menuItem.id} pizza={menuItem} />
       ))}
     </div>
   );
 };
 
-Menu.Item = () => {
+Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
+  const { name, ingredients, imageUrl, soldOut, unitPrice } = pizza;
   return (
-    <div className="group flex w-full">
+    <div
+      className={`group flex w-full border-b py-2 first:pt-0 ${soldOut ? "filter grayscale" : ""}`}
+    >
       <div className="max-w-[100px] grow">
-        <img src="https://ui-avatars.com/api/?name=React+Pizza" alt="Pizza" className="w-full" />
+        <img src={imageUrl} alt="Pizza" className="w-full" />
       </div>
       <div className="flex flex-col text-left ml-4">
-        <h3 className="text-xl font-bold">Margherita</h3>
-        <p className="text-sm">Tomato sauce, mozzarella, fresh basil</p>
-        <div className="mt-auto font-semibold text-muted-foreground">₱9.99</div>
+        <h3 className="text-xl font-bold">{name}</h3>
+        <div className="text-sm max-w-64">
+          {ingredients.map((i, index) => (
+            <div className="mr-4 inline-block" key={index}>
+              {i}
+            </div>
+          ))}
+        </div>
+        <div className="mt-auto font-semibold text-muted-foreground">
+          {
+            // Show sold out badge
+            soldOut ? (
+              <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full uppercase">
+                Sold out
+              </span>
+            ) : (
+              <span>${unitPrice}</span>
+            )
+          }
+        </div>
       </div>
-      <div className="flex ml-auto items-center justify-end min-w-[200px] space-x-4">
-        <Button variant={"destructive"} className="uppercase hidden group-hover:block">
-          Test
-        </Button>
+      <div
+        className={`flex ml-auto items-center justify-end min-w-[200px] space-x-4 ${
+          soldOut ? "hidden" : ""
+        }`}
+      >
+        <div className="hidden group-hover:block">
+          <Cart.QuintityInput />
+        </div>
         <Button className="uppercase font-bold">Add to cart</Button>
       </div>
     </div>
   );
 };
+
+export async function loader() {
+  const res = await API.get("/menu").then((res) => res.data);
+  return res;
+}
 
 export default Menu;

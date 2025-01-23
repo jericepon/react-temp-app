@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://some-domain.com/api/',
+  baseURL: 'https://react-fast-pizza-api.jonas.io/api',
   headers: {
     'Content-Type': 'application/json',
   }
