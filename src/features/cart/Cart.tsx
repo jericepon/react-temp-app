@@ -48,9 +48,9 @@ Cart.Item = () => {
 Cart.QuintityInput = ({ onChange }: { onChange?: (value: number) => void }) => {
   const handleOnchange = (type: "plus" | "minus") => {
     if (type === "plus") {
-      console.log("plus");
+      onChange?.(1);
     } else {
-      console.log("minus");
+      onChange?.(-1);
     }
   };
   return (

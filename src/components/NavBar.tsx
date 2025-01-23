@@ -1,8 +1,7 @@
+import SearchOrder from "@/features/order/SearchOrder";
 import { NavLink } from "react-router";
 import Pizza from "../assets/pizza.svg";
-import { Input } from "./ui/input";
 import { ModeToggle } from "./ui/mode-toggle";
-import SearchOrder from "@/features/order/SearchOrder";
 const NavBar = () => {
   return (
     <header

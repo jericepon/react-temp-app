@@ -1,8 +1,7 @@
+import API from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ActionFunction, ActionFunctionArgs, Form, redirect } from "react-router";
-import API from "@/api";
 
 const CreateOrder = () => {
   return (
