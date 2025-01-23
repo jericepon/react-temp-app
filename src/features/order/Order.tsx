@@ -1,6 +1,6 @@
 import API from "@/api";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/helpers";
+import { calcMinutesLeft, formatCurrency } from "@/lib/helpers";
 import { OrderCartItem, Order as OrderData } from "@/types/order";
 import { LoaderFunction, LoaderFunctionArgs, useLoaderData, useParams } from "react-router";
 
@@ -30,7 +30,9 @@ const Order = () => {
         </div>
         {/* ETA */}
         <div className="flex p-4 bg-muted text-muted-foreground">
-          <div className="font-lg font-bold">Order 53 minutes left</div>
+          <div className="font-lg font-bold">
+            Order {calcMinutesLeft(orderData.estimatedDelivery)} minutes left 
+          </div>
           <div className="ml-auto">
             <div className="text-sm">
               (Estimated delivery:{" "}
@@ -45,6 +47,7 @@ const Order = () => {
             </div>
           </div>
         </div>
+
         {/* Order items */}
         <div className="block">
           {orderData.cart.map((orderItem, index) => (
@@ -68,10 +71,11 @@ const Order = () => {
             </div>
           </div>
         </div>
-        <Button className="mt-4 rounded-full uppercase font-bold float-right">
-          <span>Make priority</span>
-          {/* <span>Placing order...</span> */}
-        </Button>
+        {orderData.priority && (
+          <Button className="mt-4 rounded-full uppercase font-bold float-right">
+            <span>Make priority</span>
+          </Button>
+        )}
       </div>
     </>
   );

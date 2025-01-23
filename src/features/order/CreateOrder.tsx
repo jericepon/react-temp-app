@@ -1,24 +1,49 @@
 import API from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ActionFunction, ActionFunctionArgs, Form, redirect } from "react-router";
+import { validatePhone } from "@/lib/helpers";
+import {
+  ActionFunction,
+  ActionFunctionArgs,
+  Form,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "react-router";
 
 const CreateOrder = () => {
+  const navigation = useNavigation();
+  const formErrors = useActionData();
+  const isSubmitting = navigation.state === "submitting";
+
   return (
     <>
       <Form className="page-inner space-y-6" method="POST">
         <h1 className="page-title">Ready to order? Let's go!</h1>
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           <div className="min-w-44">First Name</div>
           <Input id="name" name="name" className="max-w-xl rounded-full" required />
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center justify-between relative">
           <div className="min-w-44">Phone number</div>
-          <Input id="phone" name="phone" className="max-w-xl rounded-full" required />
+          <Input
+            type="tel"
+            id="phone"
+            name="phone"
+            className={`max-w-xl rounded-full after: ${
+              formErrors?.errors.phone && "border-destructive bg-destructive-foreground"
+            }`}
+            required
+          />
+          {formErrors?.errors && (
+            <div className="text-red-500 text-sm absolute -bottom-5 right-0">
+              {formErrors?.errors.phone}
+            </div>
+          )}
         </div>
-        <div className="flex items-center relative">
+        <div className="flex items-center justify-between relative">
           <div className="min-w-44">Address</div>
-          <Input id="address" name="address" className="max-w-2xl rounded-full" required />
+          <Input id="address" name="address" className="max-w-xl rounded-full" required />
           <Button
             size={"sm"}
             className="rounded-full uppercase absolute max-w-[125px] max-h-[32px] m-auto mr-1 top-0 bottom-0 right-0"
@@ -32,9 +57,9 @@ const CreateOrder = () => {
             Make your order a priority?
           </label>
         </div>
-        <Button className="mt-4 rounded-full uppercase font-bold">
+        <Button disabled={isSubmitting} className="mt-4 rounded-full uppercase font-bold">
           {/* <span>Order now from ₱500</span> */}
-          <span>Placing order...</span>
+          {isSubmitting ? <span>Placing order...</span> : <span>Place order</span>}
         </Button>
       </Form>
     </>
@@ -44,7 +69,7 @@ const CreateOrder = () => {
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const { ...rest } = Object.fromEntries(formData);
-
+  const errors: Record<string, string> = {};
   const order = {
     ...rest,
     customer: "Jeric",
@@ -98,8 +123,15 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
     ],
   };
 
-  const NewOrder = await API.post<{ data: { id: number } }>("/order", order);
+  if (!validatePhone(rest.phone as string)) {
+    errors.phone = "Please enter a valid phone number";
+  }
 
+  if (Object.keys(errors).length) {
+    return { errors };
+  }
+
+  const NewOrder = await API.post<{ data: { id: number } }>("/order", order);
   return redirect(`/order/${NewOrder.data.data.id}`); // Redirect to the newly created order
 };
 
