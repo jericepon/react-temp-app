@@ -10,7 +10,7 @@ const DefaultLayout = () => {
       {isLoading && <FullPageLoader />}
       <div className="flex flex-col h-screen">
         <NavBar />
-        <main className="flex grow pt-[72px] pb-[56px]">
+        <main className="flex grow pt-24 pb-[56px]">
           <div className="flex flex-col container grow p-4">
             <Outlet />
           </div>

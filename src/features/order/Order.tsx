@@ -33,7 +33,15 @@ const Order = () => {
           <div className="font-lg font-bold">Order 53 minutes left</div>
           <div className="ml-auto">
             <div className="text-sm">
-              (Estimated delivery: May 31, 12:36 PM) {orderData.estimatedDelivery}
+              (Estimated delivery:{" "}
+              {new Date(orderData.estimatedDelivery).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
+              )
             </div>
           </div>
         </div>
