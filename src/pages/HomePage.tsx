@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import CreateUser from "@/features/user/CreateUser";
 import { RootState } from "@/store";
-import { updateUserName } from "@/store/features/user";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user);
+  const { username } = useSelector((state: RootState) => state.user);
 
   return (
     <div className="flex grow justify-center items-center h-full">
@@ -17,17 +15,16 @@ const HomePage = () => {
         <div className="text-4xl mt-4 text-primary font-semibold text-primary">
           Straight out the oven, straight to you.
         </div>
+
         <div className="text-lg mt-6">Welcome!, Please start by telling us your name:</div>
-        <Input
-          className="ring-2 ring-primary max-w-[400px] w-full mt-5"
-          onChange={(e) => dispatch(updateUserName(e.target.value))}
-        />
-        <Button
-          className={`mt-8 ${user.username === "" ? "opacity-0 pointer-events-none" : ""}`}
-          onClick={() => navigate("/order/new")}
-        >
-          Order Now
-        </Button>
+
+        {!username ? (
+          <CreateUser />
+        ) : (
+          <Button onClick={() => navigate("/order/new")} className="mt-6">
+            Order Now
+          </Button>
+        )}
       </div>
     </div>
   );
