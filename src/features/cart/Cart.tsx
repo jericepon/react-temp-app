@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { RootState } from "@/store";
-import { useSelector } from "react-redux";
+import { formatCurrency } from "@/lib/helpers";
+import { AppDispatch, RootState } from "@/store";
+import { clearCart, deleteItem, minusQuantity, plusQuantity } from "@/store/features/cart";
+import { CartItem } from "@/types/cart";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 
+type CartInputType = "plus" | "minus";
+
 const Cart = () => {
-  const { cartList } = useSelector((state: RootState) => state.cart);
-
-  console.log(cartList);
-  
-
+  const { list } = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <div className="page-inner">
       {/* Back link */}
@@ -16,14 +18,18 @@ const Cart = () => {
         &larr; Back to Menu
       </Link>
       <div className="flex flex-col items-center text-center">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <Cart.Item key={index} />
+        {list.map((item) => (
+          <Cart.Item key={item.pizzaId} item={item} />
         ))}
       </div>
       {/* Order action buttons */}
       <div className="flex space-x-4 mt-6">
         <Button className="uppercase font-bold">Order Pizzas</Button>
-        <Button variant={"outline"} className="uppercase text-muted-foreground">
+        <Button
+          variant={"outline"}
+          className="uppercase text-muted-foreground"
+          onClick={() => dispatch(clearCart())}
+        >
           Clear cart
         </Button>
       </div>
@@ -31,19 +37,30 @@ const Cart = () => {
   );
 };
 
-Cart.Item = () => {
+Cart.Item = ({ item }: { item: CartItem }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { name, quantity, totalPrice } = item;
+  const handleOnChange = (type: CartInputType) => {
+    type === "plus" ? dispatch(plusQuantity(item.pizzaId)) : dispatch(minusQuantity(item.pizzaId));
+  };
   return (
     <>
       <div className="flex items-center w-full border-b py-4">
         <div className="flex flex-col text-left">
-          <p className="">[n]x Margherita</p>
+          <p className="">
+            {quantity}x {name}
+          </p>
         </div>
 
-        <div className="font-semibold ml-auto mr-6">$9.99</div>
+        <div className="font-semibold ml-auto mr-6">{formatCurrency(totalPrice)}</div>
 
         <div className="flex items-center justify-end min-w-[200px] space-x-4">
-          <Cart.QuintityInput />
-          <Button variant={"outline"} className="uppercase font-bold text-muted-foreground">
+          <Cart.QuintityInput value={quantity} onChange={handleOnChange} />
+          <Button
+            variant={"outline"}
+            className="uppercase font-bold text-muted-foreground"
+            onClick={() => dispatch(deleteItem(item))}
+          >
             Delete
           </Button>
         </div>
@@ -52,24 +69,31 @@ Cart.Item = () => {
   );
 };
 
-Cart.QuintityInput = ({ onChange }: { onChange?: (value: number) => void }) => {
+Cart.QuintityInput = ({
+  onChange,
+  value,
+}: {
+  onChange?: (type: CartInputType) => void;
+  value: number;
+}) => {
   const handleOnchange = (type: "plus" | "minus") => {
     if (type === "plus") {
-      onChange?.(1);
+      onChange?.("plus");
     } else {
-      onChange?.(-1);
+      onChange?.("minus");
     }
   };
   return (
     <div className="flex flex-row items-center">
       <Button
+        disabled={!value}
         size="icon"
-        className="uppercase rounded-full"
+        className={`uppercase rounded-full ${!value ? "pointer-events-none" : ""}`}
         onClick={() => handleOnchange("minus")}
       >
         -
       </Button>
-      <div className="mx-2 min-w-8">[n]</div>
+      <div className="mx-2 min-w-8">{value}</div>
       <Button size="icon" className="uppercase rounded-full" onClick={() => handleOnchange("plus")}>
         +
       </Button>

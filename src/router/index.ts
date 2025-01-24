@@ -8,6 +8,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import HomePage from "@/pages/HomePage";
 import { ComponentType } from "react";
 import { createBrowserRouter } from "react-router";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
       },
       {
         path: "menu",
-        Component: Menu,
+        Component: () => ProtectedRoute(Menu),
         loader: menuLoader,
       },
       {

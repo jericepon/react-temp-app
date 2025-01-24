@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 const CreateUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
+  const [username, setUsername] = React.useState("");
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as HTMLFormElement;
@@ -17,12 +17,16 @@ const CreateUser = () => {
     const formValues = Object.fromEntries(formData.entries());
 
     dispatch(updateUserName(formValues.username));
-    navigate("/order/new");
+    navigate("/menu");
   };
   return (
     <form onSubmit={handleOnSubmit} className="max-w-[400px] w-full mt-5 space-y-8">
-      <Input name="username" className="ring-2 ring-primary" />
-      <Button>Order Now</Button>
+      <Input
+        name="username"
+        className="ring-2 ring-primary"
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <Button disabled={!username}>Order Now</Button>
     </form>
   );
 };

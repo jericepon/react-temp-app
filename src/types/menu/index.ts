@@ -5,4 +5,5 @@ export interface MenuItem {
   imageUrl: string;
   ingredients: string[];
   soldOut: boolean;
+  quantity: number;
 }

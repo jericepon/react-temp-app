@@ -21,7 +21,7 @@ const HomePage = () => {
         {!username ? (
           <CreateUser />
         ) : (
-          <Button onClick={() => navigate("/order/new")} className="mt-6">
+          <Button onClick={() => navigate("/menu")} className="mt-6">
             Order Now
           </Button>
         )}

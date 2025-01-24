@@ -1,6 +1,10 @@
 import API from "@/api";
 import { Button } from "@/components/ui/button";
+import { AppDispatch } from "@/store";
+import { addItem } from "@/store/features/cart";
 import { MenuItem } from "@/types/menu";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLoaderData } from "react-router";
 import Cart from "../cart/Cart";
 
@@ -19,7 +23,12 @@ const Menu = () => {
 };
 
 Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [pizzaQty, setPizzaQty] = useState(0);
   const { name, ingredients, imageUrl, soldOut, unitPrice } = pizza;
+  const handleOnChange = (type: string) => {
+    setPizzaQty(type === "plus" ? pizzaQty + 1 : pizzaQty - 1);
+  };
   return (
     <div
       className={`group flex flex-wrap sm:flex-nowrap w-full border-b py-2 first:pt-0 ${
@@ -57,9 +66,15 @@ Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
         }`}
       >
         <div className="md:hidden md:group-hover:block">
-          <Cart.QuintityInput />
+          <Cart.QuintityInput value={pizzaQty} onChange={handleOnChange} />
         </div>
-        <Button className="uppercase font-bold">Add to cart</Button>
+        <Button
+          disabled={!pizzaQty}
+          className="uppercase font-bold"
+          onClick={() => dispatch(addItem({ ...pizza, pizzaId: pizza.id, quantity: pizzaQty }))}
+        >
+          Add to cart
+        </Button>
       </div>
     </div>
   );
