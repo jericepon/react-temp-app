@@ -49,8 +49,8 @@ const cart = createSlice({
         cart.caseReducers.deleteItem(state, action);
       }
     },
-    updateItem(state, action) {
-    },
+    // updateItem(state, action) {
+    // },
     deleteItem(state, action) {
       state.list = state.list.filter((item) => item.pizzaId !== action.payload);
     },
@@ -59,5 +59,5 @@ const cart = createSlice({
     }
   },
 });
-export const { addItem, plusQuantity, minusQuantity, updateItem, deleteItem, clearCart } = cart.actions;
+export const { addItem, plusQuantity, minusQuantity, deleteItem, clearCart } = cart.actions;
 export default cart.reducer;
