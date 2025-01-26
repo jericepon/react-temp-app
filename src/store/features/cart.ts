@@ -41,8 +41,8 @@ const cart = createSlice({
     },
     minusQuantity(state, action) {
       let item = state.list.filter((item: CartItem) => item.pizzaId === action.payload)[0];
-      item.quantity -= 1;
-      item.totalPrice = item.totalPrice - item.unitPrice;
+      item.quantity--;
+      item.totalPrice = item.quantity * item.unitPrice;
 
       if (item.quantity == 0)
       {
