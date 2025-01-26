@@ -43,6 +43,7 @@ Cart.Item = ({ item }: { item: CartItem }) => {
   const handleOnChange = (type: CartInputType) => {
     type === "plus" ? dispatch(plusQuantity(item.pizzaId)) : dispatch(minusQuantity(item.pizzaId));
   };
+
   return (
     <>
       <div className="flex items-center w-full border-b py-4">
