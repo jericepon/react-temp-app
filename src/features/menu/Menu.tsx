@@ -1,10 +1,10 @@
 import API from "@/api";
 import { Button } from "@/components/ui/button";
-import { AppDispatch, RootState } from "@/store";
+import { AppDispatch } from "@/store";
 import { addItem } from "@/store/features/cart";
 import { MenuItem } from "@/types/menu";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLoaderData } from "react-router";
 import Cart from "../cart/Cart";
 
@@ -24,7 +24,6 @@ const Menu = () => {
 
 Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { list } = useSelector((state: RootState) => state.cart);
   const [pizzaQty, setPizzaQty] = useState(0);
   const { name, ingredients, imageUrl, soldOut, unitPrice } = pizza;
   const handleOnChange = (type: string) => {

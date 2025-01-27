@@ -1,14 +1,26 @@
 import API from "@/api";
 import { Button } from "@/components/ui/button";
+import { useLoadingDots } from "@/hooks/UseDots";
 import { calcMinutesLeft, formatCurrency } from "@/lib/helpers";
 import { OrderCartItem, Order as OrderData } from "@/types/order";
-import { LoaderFunction, LoaderFunctionArgs, useLoaderData, useParams } from "react-router";
+import { useState } from "react";
+import {
+  ActionFunction,
+  ActionFunctionArgs,
+  Form,
+  LoaderFunction,
+  LoaderFunctionArgs,
+  useLoaderData,
+  useParams,
+} from "react-router";
 
 const Order = () => {
   const { orderId } = useParams();
   const order = useLoaderData();
   const { data } = order;
   const orderData: OrderData = data;
+  const [isPriority, setIsPriority] = useState(orderData.priority);
+  const dot = useLoadingDots();
 
   return (
     <>
@@ -23,15 +35,22 @@ const Order = () => {
                 priority
               </div>
             )}
-            <div className="rounded-full uppercase bg-success px-4 py-1 text-xs align-middle">
-              {orderData.status}
-            </div>
+            {orderData.status === "delivered" ? (
+              <div className="rounded-full flex uppercase bg-success px-4 py-1 text-xs align-middle">
+                {orderData.status}
+              </div>
+            ) : (
+              <div className="rounded-full flex uppercase bg-success px-4 py-1 text-xs align-middle min-w-[120px] animate-pulse">
+                <div className="float-left">{orderData.status}</div>
+                {dot}
+              </div>
+            )}
           </div>
         </div>
         {/* ETA */}
         <div className="flex p-4 bg-muted text-muted-foreground">
           <div className="font-lg font-bold">
-            Order {calcMinutesLeft(orderData.estimatedDelivery)} minutes left 
+            Order {calcMinutesLeft(orderData.estimatedDelivery)} minutes left
           </div>
           <div className="ml-auto">
             <div className="text-sm">
@@ -71,10 +90,18 @@ const Order = () => {
             </div>
           </div>
         </div>
-        {orderData.priority && (
-          <Button className="mt-4 rounded-full uppercase font-bold float-right">
-            <span>Make priority</span>
-          </Button>
+        {!orderData.priority && (
+          <Form className="space-y-6" method="POST">
+            <input type="hidden" name="order" value={JSON.stringify(orderData)} />
+            <input type="hidden" name="orderId" value={orderId} />
+            <input type="hidden" name="priority" value={isPriority.toString()} />
+            <Button
+              className="mt-4 rounded-full uppercase font-bold float-right"
+              onClick={() => setIsPriority(true)}
+            >
+              <span>Make priority</span>
+            </Button>
+          </Form>
         )}
       </div>
     </>
@@ -102,6 +129,15 @@ Order.Item = ({ orderItem }: { orderItem: OrderCartItem }) => {
 
 export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
   const res = await API.get(`/order/${params.orderId}`).then((res) => res.data);
+  return res;
+};
+
+export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData.entries());
+  console.log(data);
+
+  const res = await API.post(`/order/${data.orderId}`, data.order).then((res) => res.data);
   return res;
 };
 

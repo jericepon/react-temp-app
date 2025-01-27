@@ -4,11 +4,13 @@ import { AppDispatch, RootState } from "@/store";
 import { clearCart, deleteItem, minusQuantity, plusQuantity } from "@/store/features/cart";
 import { CartItem } from "@/types/cart";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import EmptyCart from "./EmptyCart";
 
 type CartInputType = "plus" | "minus";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { list } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   return (
@@ -17,22 +19,31 @@ const Cart = () => {
       <Link to="/menu" className="text-blue-500 mb-4">
         &larr; Back to Menu
       </Link>
-      <div className="flex flex-col items-center text-center">
-        {list.map((item) => (
-          <Cart.Item key={item.pizzaId} item={item} />
-        ))}
-      </div>
-      {/* Order action buttons */}
-      <div className="flex space-x-4 mt-6">
-        <Button className="uppercase font-bold">Order Pizzas</Button>
-        <Button
-          variant={"outline"}
-          className="uppercase text-muted-foreground"
-          onClick={() => dispatch(clearCart())}
-        >
-          Clear cart
-        </Button>
-      </div>
+      {/* Empty cart */}
+      {!list.length ? (
+        <EmptyCart />
+      ) : (
+        <>
+          <div className="flex flex-col items-center text-center">
+            {list.map((item) => (
+              <Cart.Item key={item.pizzaId} item={item} />
+            ))}
+          </div>
+          {/* Order action buttons */}
+          <div className="flex space-x-4 mt-6">
+            <Button className="uppercase font-bold" onClick={() => navigate("/order/new")}>
+              Order Pizzas
+            </Button>
+            <Button
+              variant={"outline"}
+              className="uppercase text-muted-foreground"
+              onClick={() => dispatch(clearCart())}
+            >
+              Clear cart
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

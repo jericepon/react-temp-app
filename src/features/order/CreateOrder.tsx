@@ -2,6 +2,9 @@ import API from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validatePhone } from "@/lib/helpers";
+import { RootState, rootStore } from "@/store";
+import { clearCart } from "@/store/features/cart";
+import { useSelector } from "react-redux";
 import {
   ActionFunction,
   ActionFunctionArgs,
@@ -15,14 +18,21 @@ const CreateOrder = () => {
   const navigation = useNavigation();
   const formErrors = useActionData();
   const isSubmitting = navigation.state === "submitting";
-
+  const { list } = useSelector((state: RootState) => state.cart);
+  const { username } = useSelector((state: RootState) => state.user);
   return (
     <>
       <Form className="page-inner space-y-6" method="POST">
         <h1 className="page-title">Ready to order? Let's go!</h1>
         <div className="flex items-center justify-between">
           <div className="min-w-44">First Name</div>
-          <Input id="name" name="name" className="max-w-xl rounded-full" required />
+          <Input
+            id="name"
+            name="name"
+            className="max-w-xl rounded-full"
+            value={username}
+            disabled
+          />
         </div>
         <div className="flex items-center justify-between relative">
           <div className="min-w-44">Phone number</div>
@@ -52,6 +62,7 @@ const CreateOrder = () => {
           </Button>
         </div>
         <div className="flex items-center space-x-4">
+          <input type="hidden" name="cart" value={JSON.stringify(list)} />
           <input id="priority" type="checkbox" name="priority" />
           <label htmlFor="priority" className="text-sm cursor-pointer">
             Make your order a priority?
@@ -70,57 +81,12 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
   const formData = await request.formData();
   const { ...rest } = Object.fromEntries(formData);
   const errors: Record<string, string> = {};
+
   const order = {
     ...rest,
     customer: "Jeric",
     priority: rest.priority === "on",
-    cart: [
-      {
-        addIngredients: [],
-        removeIngredients: [],
-        pizzaId: 1,
-        name: "Margherita",
-        quantity: 2,
-        unitPrice: 12,
-        totalPrice: 24,
-      },
-      {
-        addIngredients: [],
-        removeIngredients: [],
-        pizzaId: 4,
-        name: "Prosciutto e Rucola",
-        quantity: 3,
-        unitPrice: 16,
-        totalPrice: 48,
-      },
-      {
-        addIngredients: [],
-        removeIngredients: [],
-        pizzaId: 6,
-        name: "Vegetale",
-        quantity: 1,
-        unitPrice: 13,
-        totalPrice: 13,
-      },
-      {
-        addIngredients: [],
-        removeIngredients: [],
-        pizzaId: 7,
-        name: "Napoli",
-        quantity: 2,
-        unitPrice: 16,
-        totalPrice: 32,
-      },
-      {
-        addIngredients: [],
-        removeIngredients: [],
-        pizzaId: 11,
-        name: "Spinach and Mushroom",
-        quantity: 2,
-        unitPrice: 15,
-        totalPrice: 30,
-      },
-    ],
+    cart: JSON.parse(rest.cart as string),
   };
 
   if (!validatePhone(rest.phone as string)) {
@@ -132,6 +98,7 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
   }
 
   const NewOrder = await API.post<{ data: { id: number } }>("/order", order);
+  rootStore.dispatch(clearCart()); // Clear the cart
   return redirect(`/order/${NewOrder.data.data.id}`); // Redirect to the newly created order
 };
 

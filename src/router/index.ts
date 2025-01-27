@@ -1,7 +1,7 @@
 import Cart from "@/features/cart/Cart";
 import Menu, { loader as menuLoader } from "@/features/menu/Menu";
 import CreateOrder, { action as createOrderAction } from "@/features/order/CreateOrder";
-import Order, { loader as orderLoader } from "@/features/order/Order";
+import Order, { loader as orderLoader, action as updateOrderAction } from "@/features/order/Order";
 import OrderNotFound from "@/features/order/OrderNotFound";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorPage from "@/pages/ErrorPage";
@@ -26,18 +26,19 @@ const router = createBrowserRouter([
       },
       {
         path: "cart",
-        Component: Cart,
+        Component: () => ProtectedRoute(Cart),
       },
       {
         path: "order/new",
-        Component: CreateOrder,
+        Component: () => ProtectedRoute(CreateOrder),
         action: createOrderAction,
       },
       {
         path: "order/:orderId",
         Component: Order,
         ErrorBoundary: OrderNotFound as ComponentType,
-        loader: orderLoader
+        loader: orderLoader,
+        action: updateOrderAction,
       },
     ],
   },
