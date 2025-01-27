@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { validatePhone } from "@/lib/helpers";
 import { RootState, rootStore } from "@/store";
 import { clearCart } from "@/store/features/cart";
+import { getLocation } from "@/store/features/user";
+import { MouseEvent } from "react";
 import { useSelector } from "react-redux";
 import {
   ActionFunction,
@@ -19,7 +21,12 @@ const CreateOrder = () => {
   const formErrors = useActionData();
   const isSubmitting = navigation.state === "submitting";
   const { list } = useSelector((state: RootState) => state.cart);
-  const { username } = useSelector((state: RootState) => state.user);
+  const { username, address, loading } = useSelector((state: RootState) => state.user);
+
+  const handleGetLocation: (e: MouseEvent<HTMLButtonElement>) => void = (e) => {
+    e.preventDefault();
+    rootStore.dispatch(getLocation());
+  };
   return (
     <>
       <Form className="page-inner space-y-6" method="POST">
@@ -53,10 +60,18 @@ const CreateOrder = () => {
         </div>
         <div className="flex items-center justify-between relative">
           <div className="min-w-44">Address</div>
-          <Input id="address" name="address" className="max-w-xl rounded-full" required />
+          <Input
+            id="address"
+            name="address"
+            className="max-w-xl rounded-full"
+            value={address}
+            required
+          />
           <Button
             size={"sm"}
-            className="rounded-full uppercase absolute max-w-[125px] max-h-[32px] m-auto mr-1 top-0 bottom-0 right-0"
+            className="flex rounded-full uppercase absolute min-w-[125px] max-h-[32px] m-auto mr-1 top-0 bottom-0 right-0"
+            onClick={handleGetLocation}
+            disabled={loading}
           >
             Get location
           </Button>
