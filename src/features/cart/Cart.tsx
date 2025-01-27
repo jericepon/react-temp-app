@@ -57,24 +57,26 @@ Cart.Item = ({ item }: { item: CartItem }) => {
 
   return (
     <>
-      <div className="flex items-center w-full border-b py-4">
-        <div className="flex flex-col text-left">
+      <div className="flex items-start md:items-center w-full border-b py-4 md:flex-row flex-col space-y-6 md:space-y-0">
+        <div className="flex flex-col md:text-left">
           <p className="">
             {quantity}x {name}
           </p>
         </div>
 
-        <div className="font-semibold ml-auto mr-6">{formatCurrency(totalPrice)}</div>
+        <div className="flex items-center justify-between md:w-full">
+          <div className="font-semibold ml-auto mr-6">{formatCurrency(totalPrice)}</div>
 
-        <div className="flex items-center justify-end min-w-[200px] space-x-4">
-          <Cart.QuintityInput value={quantity} onChange={handleOnChange} />
-          <Button
-            variant={"outline"}
-            className="uppercase font-bold text-muted-foreground"
-            onClick={() => dispatch(deleteItem(item))}
-          >
-            Delete
-          </Button>
+          <div className="flex items-center justify-end min-w-[200px] space-x-4">
+            <Cart.QuintityInput value={quantity} onChange={handleOnChange} />
+            <Button
+              variant={"outline"}
+              className="uppercase font-bold text-muted-foreground"
+              onClick={() => dispatch(deleteItem(item.pizzaId))}
+            >
+              Delete
+            </Button>
+          </div>
         </div>
       </div>
     </>
