@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validatePhone } from "@/lib/helpers";
 import { RootState, rootStore } from "@/store";
-import { clearCart } from "@/store/features/cart";
 import { getLocation } from "@/store/features/user";
 import { MouseEvent } from "react";
 import { useSelector } from "react-redux";
@@ -65,7 +64,7 @@ const CreateOrder = () => {
             name="address"
             className="max-w-xl rounded-full"
             value={address}
-            required
+            readOnly
           />
           <Button
             size={"sm"}
@@ -113,7 +112,6 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
   }
 
   const NewOrder = await API.post<{ data: { id: number } }>("/order", order);
-  rootStore.dispatch(clearCart()); // Clear the cart
   return redirect(`/order/${NewOrder.data.data.id}`); // Redirect to the newly created order
 };
 

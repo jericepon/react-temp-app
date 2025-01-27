@@ -2,14 +2,16 @@ import API from "@/api";
 import { Button } from "@/components/ui/button";
 import { useLoadingDots } from "@/hooks/UseDots";
 import { calcMinutesLeft, formatCurrency } from "@/lib/helpers";
+import { rootStore } from "@/store";
 import { OrderCartItem, Order as OrderData } from "@/types/order";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActionFunction,
   ActionFunctionArgs,
   Form,
   LoaderFunction,
   LoaderFunctionArgs,
+  useFetcher,
   useLoaderData,
   useParams,
 } from "react-router";
@@ -21,7 +23,12 @@ const Order = () => {
   const orderData: OrderData = data;
   const [isPriority, setIsPriority] = useState(orderData.priority);
   const dot = useLoadingDots();
-
+  const fetcher = useFetcher();
+  useEffect(() => {
+    if (!fetcher.data && fetcher.state == "idle") {
+      fetcher.load("/menu");
+    }
+  }, [fetcher]);
   return (
     <>
       <div className="page-inner space-y-6">
@@ -70,7 +77,14 @@ const Order = () => {
         {/* Order items */}
         <div className="block">
           {orderData.cart.map((orderItem, index) => (
-            <Order.Item orderItem={orderItem} key={index} />
+            <Order.Item
+              orderItem={orderItem}
+              ingredients={
+                rootStore.getState().cart.list.find((item) => item.pizzaId === orderItem.pizzaId)
+                  ?.ingredients || []
+              }
+              key={index}
+            />
           ))}
         </div>
         {/* Total */}
@@ -108,16 +122,16 @@ const Order = () => {
   );
 };
 
-Order.Item = ({ orderItem }: { orderItem: OrderCartItem }) => {
+Order.Item = ({ orderItem, ingredients }: { orderItem: OrderCartItem; ingredients: string[] }) => {
   return (
     <div className="flex items-center w-full last:border-b border-t p-4">
       <div className="flex flex-col text-left">
         <p className="">
           {orderItem.quantity}x {orderItem.name}
         </p>
-        <div className="text-sm">
-          {orderItem.removeIngredients.map((ingredient, index) => (
-            <span key={index}>{ingredient.name}</span>
+        <div className="flex text-sm space-x-2">
+          {ingredients.map((ingredient, index) => (
+            <span key={index}>{ingredient}</span>
           ))}
         </div>
       </div>
@@ -135,9 +149,10 @@ export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => 
 export const action: ActionFunction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData.entries());
-  console.log(data);
-
-  const res = await API.post(`/order/${data.orderId}`, data.order).then((res) => res.data);
+  const reqData = JSON.parse(data.order as string);
+  const res = await API.patch(`/order/${data.orderId}`, { ...reqData, priority: true }).then(
+    (res) => res.data
+  );
   return res;
 };
 

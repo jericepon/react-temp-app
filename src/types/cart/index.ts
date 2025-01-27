@@ -6,4 +6,5 @@ export type CartItem = {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  ingredients: string[];
 };

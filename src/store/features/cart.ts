@@ -14,8 +14,6 @@ const cart = createSlice({
   initialState,
   reducers: {
     addItem(state, action) {
-      console.log(state.list.some((item) => item.pizzaId === action.payload.id));
-
       if (state.list.some((item) => item.pizzaId === action.payload.id))
       {
         state.list = state.list.map((item) => {
