@@ -49,7 +49,6 @@ Menu.Item = ({ pizza }: { pizza: MenuItem }) => {
         </div>
         <div className="mt-auto font-semibold text-muted-foreground">
           {
-            // Show sold out badge
             soldOut ? (
               <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full uppercase">
                 Sold out
