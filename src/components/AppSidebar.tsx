@@ -19,7 +19,7 @@ const AppSidebar = () => {
   const items = [
     {
       title: "Home",
-      url: "/home",
+      url: "/",
       icon: <Home />,
       color: "text-primary",
     },
@@ -58,10 +58,10 @@ const AppSidebar = () => {
                     to={item.url}
                     className={({ isActive }) =>
                       [
-                        "py-2",
+                        "rounded rounded-lg py-2",
                         "flex items-center",
-                        isActive ? "text-primary" : "",
-                        !open ? "justify-center" : "",
+                        isActive ? "bg-muted text-primary" : "",
+                        !open ? "justify-center" : "px-2 hover:bg-muted",
                       ].join(" ")
                     }
                   >

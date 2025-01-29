@@ -11,7 +11,8 @@ let router = createBrowserRouter([
     Component: DashboardLayout,
     children: [
       {
-        path: "/home",
+        index: true,
+        path: "/",
         Component: HomePage,
       },
       {
