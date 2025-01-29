@@ -1,7 +1,7 @@
 import { useEffect } from "react";
+import { getCabins } from "./api/cabins";
 import { ModeToggle } from "./components/ui/mode-toggle";
 import { ThemeProvider } from "./components/ui/theme-privider";
-import { getCabins } from "./api/cabins";
 
 function App() {
   useEffect(() => {
