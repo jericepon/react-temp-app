@@ -5,17 +5,16 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInset,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Home, Hotel, Settings, Tent } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Home, Settings, Tent } from "lucide-react";
 import { NavLink } from "react-router";
+import { Button } from "./ui/button";
 
 const AppSidebar = () => {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
   const items = [
     {
       title: "Home",
@@ -26,7 +25,7 @@ const AppSidebar = () => {
     {
       title: "Bookings",
       url: "/bookings",
-      icon: <Hotel />,
+      icon: <Calendar />,
     },
     {
       title: "Cabins",
@@ -40,7 +39,14 @@ const AppSidebar = () => {
     },
   ];
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar className="dark:bg-card" collapsible="icon">
+      <Button
+        size={"icon"}
+        className="absolute top-0 bottom-0 m-auto -right-[18px] z-10 rounded-full"
+        onClick={() => setOpen(!open)}
+      >
+        <ArrowRight className={[!open ? "rotate-0" : "rotate-180", "transition-all"].join(" ")} />
+      </Button>
       <SidebarHeader className="text-center">
         <img
           src="https://ui-avatars.com/api/?name=The+Wild+Oasis"
@@ -48,7 +54,7 @@ const AppSidebar = () => {
         />
         {open && <div className="font-bold text-xl capitalize">The wild oasis</div>}
       </SidebarHeader>
-      <SidebarContent className={open ? "px-4" : ""}>
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

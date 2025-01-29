@@ -1,14 +1,11 @@
 import { LogOutIcon, UserIcon } from "lucide-react";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { ModeToggle } from "./ui/mode-toggle";
-import { SidebarTrigger } from "./ui/sidebar";
 import { NavLink } from "react-router";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { ModeToggle } from "./ui/mode-toggle";
 
 const AppHeader = () => {
   return (
-    <header className="bg-muted p-1 flex justify-between items-center p-4">
-      <SidebarTrigger />
+    <header className="bg-card p-1 flex justify-between items-center p-4 relative">
       <nav className="flex items-center space-x-4">
         <div className="flex items-center space-x-3 mr-6">
           <Avatar>

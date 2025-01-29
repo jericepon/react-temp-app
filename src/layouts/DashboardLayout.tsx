@@ -10,9 +10,9 @@ const DashboardLayout = () => {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <SidebarProvider>
           <AppSidebar />
-          <main className="flex flex-col flex-1 grow">
+          <main className="flex flex-col flex-1 grow bg-muted">
             <AppHeader />
-            <div className="grid flex-1 grow p-4 grid-cols-4 gap-4">
+            <div className="flex flex-col flex-1 p-4 overflow-hidden overflow-x-auto">
               <Outlet />
             </div>
           </main>

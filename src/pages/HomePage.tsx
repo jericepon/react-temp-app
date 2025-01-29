@@ -1,10 +1,54 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import DashboardHeader from "@/components/DashboardHeader";
+import DashboardStatCard from "@/components/DashboardStatCard";
+import { CalendarCheck, ChartLine, DollarSignIcon, Luggage } from "lucide-react";
+import { ReactNode } from "react";
 
 const HomePage = () => {
+  type StatCardData = {
+    title: string;
+    value: number;
+    icon: ReactNode;
+    iconColorClass?: string;
+  };
+
+  const statCardData: StatCardData[] = [
+    {
+      title: "Bookings",
+      value: 0,
+      icon: <Luggage size="55px" />,
+      iconColorClass: "bg-blue-100 text-blue-600",
+    },
+    {
+      title: "Sales",
+      value: 0,
+      icon: <DollarSignIcon size="55px" />,
+      iconColorClass: "bg-green-100 text-green-600",
+    },
+    {
+      title: "Check Ins",
+      value: 0,
+      icon: <CalendarCheck size="55px" />,
+      iconColorClass: "bg-purple-100 text-purple-600",
+    },
+    {
+      title: "Occupancy Rate",
+      value: 0,
+      icon: <ChartLine size="55px" />,
+      iconColorClass: "bg-yellow-100 text-yellow-600",
+    },
+  ];
   return (
     <>
-      <Skeleton className="h-1/2 rounded-2xl shadow-md" />
-      <Skeleton className="h-1/2 rounded-2xl shadow-md" />
+      <DashboardHeader />
+      <div className="flex grow flex-wrap gap-4">
+        <div className="flex h-[15%] w-full space-x-4">
+          {statCardData.map((stat, index) => (
+            <DashboardStatCard {...stat} />
+          ))}
+        </div>
+        <div className="bg-muted h-[35%] w-full" />
+        <div className="bg-muted h-[50%] w-full" />
+      </div>
     </>
   );
 };
