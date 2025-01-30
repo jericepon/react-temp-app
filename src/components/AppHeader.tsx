@@ -1,7 +1,7 @@
 import { LogOutIcon, UserIcon } from "lucide-react";
 import { NavLink } from "react-router";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { ModeToggle } from "./ui/mode-toggle";
+import { Avatar, AvatarImage } from "./shadcn/avatar";
+import { ModeToggle } from "./shadcn/mode-toggle";
 
 const AppHeader = () => {
   return (

@@ -1,7 +1,7 @@
 import DashboardLayout from "@/layouts/DashboardLayout";
 import BookingsPage from "@/pages/BookingsPage";
 import CabinsPage from "@/pages/CabinsPage";
-import HomePage from "@/pages/HomePage";
+import DashboardHomePage from "@/pages/DashboardHomePage";
 import SettingsPage from "@/pages/SettingsPage";
 import UsersPage from "@/pages/UsersPage";
 import { createBrowserRouter } from "react-router";
@@ -14,7 +14,7 @@ let router = createBrowserRouter([
       {
         index: true,
         path: "/",
-        Component: HomePage,
+        Component: DashboardHomePage,
       },
       {
         path: "/bookings",

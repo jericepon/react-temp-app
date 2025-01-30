@@ -8,18 +8,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Home,
-  Settings,
-  Tent,
-  Users,
-} from "lucide-react";
+} from "@/components/shadcn/sidebar";
+import { ArrowRight, Calendar, Home, Settings, Tent, Users } from "lucide-react";
 import { NavLink } from "react-router";
-import { Button } from "./ui/button";
+import { Button } from "./shadcn/button";
 
 const AppSidebar = () => {
   const { open, setOpen } = useSidebar();
@@ -58,20 +50,14 @@ const AppSidebar = () => {
         className="absolute top-0 bottom-0 m-auto -right-[18px] z-10 rounded-full"
         onClick={() => setOpen(!open)}
       >
-        <ArrowRight
-          className={[!open ? "rotate-0" : "rotate-180", "transition-all"].join(
-            " "
-          )}
-        />
+        <ArrowRight className={[!open ? "rotate-0" : "rotate-180", "transition-all"].join(" ")} />
       </Button>
       <SidebarHeader className="text-center">
         <img
           src="https://ui-avatars.com/api/?name=The+Wild+Oasis"
           className="max-w-16 m-auto w-full"
         />
-        {open && (
-          <div className="font-bold text-xl capitalize">The wild oasis</div>
-        )}
+        {open && <div className="font-bold text-xl capitalize">The wild oasis</div>}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

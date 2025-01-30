@@ -1,7 +1,7 @@
 import AppHeader from "@/components/AppHeader";
 import AppSidebar from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { ThemeProvider } from "@/components/ui/theme-privider";
+import { SidebarProvider } from "@/components/shadcn/sidebar";
+import { ThemeProvider } from "@/components/shadcn/theme-privider";
 import { Outlet } from "react-router";
 
 const DashboardLayout = () => {
