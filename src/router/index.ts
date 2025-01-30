@@ -3,6 +3,7 @@ import BookingsPage from "@/pages/BookingsPage";
 import CabinsPage from "@/pages/CabinsPage";
 import HomePage from "@/pages/HomePage";
 import SettingsPage from "@/pages/SettingsPage";
+import UsersPage from "@/pages/UsersPage";
 import { createBrowserRouter } from "react-router";
 
 let router = createBrowserRouter([
@@ -22,6 +23,10 @@ let router = createBrowserRouter([
       {
         path: "/cabins",
         Component: CabinsPage,
+      },
+      {
+        path: "/users",
+        Component: UsersPage,
       },
       {
         path: "/settings",

@@ -5,8 +5,8 @@ import { ModeToggle } from "./ui/mode-toggle";
 
 const AppHeader = () => {
   return (
-    <header className="bg-card p-1 flex justify-between items-center p-4 relative">
-      <nav className="flex items-center space-x-4">
+    <header className="bg-card p-1 flex items-center p-4">
+      <nav className="flex items-center space-x-4 ml-auto">
         <div className="flex items-center space-x-3 mr-6">
           <Avatar>
             <AvatarImage src="https://ui-avatars.com/api/?name=The+Wild+Oasis" alt="@shadcn" />

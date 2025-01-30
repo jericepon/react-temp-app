@@ -1,6 +1,11 @@
 import DashboardHeader from "@/components/DashboardHeader";
 import DashboardStatCard from "@/components/DashboardStatCard";
-import { CalendarCheck, ChartLine, DollarSignIcon, Luggage } from "lucide-react";
+import {
+  CalendarCheck,
+  ChartLine,
+  DollarSignIcon,
+  Luggage,
+} from "lucide-react";
 import { ReactNode } from "react";
 
 const HomePage = () => {
@@ -15,25 +20,25 @@ const HomePage = () => {
     {
       title: "Bookings",
       value: 0,
-      icon: <Luggage size="55px" />,
+      icon: <Luggage size="45px" />,
       iconColorClass: "bg-blue-100 text-blue-600",
     },
     {
       title: "Sales",
       value: 0,
-      icon: <DollarSignIcon size="55px" />,
+      icon: <DollarSignIcon size="45px" />,
       iconColorClass: "bg-green-100 text-green-600",
     },
     {
       title: "Check Ins",
       value: 0,
-      icon: <CalendarCheck size="55px" />,
+      icon: <CalendarCheck size="45px" />,
       iconColorClass: "bg-purple-100 text-purple-600",
     },
     {
       title: "Occupancy Rate",
       value: 0,
-      icon: <ChartLine size="55px" />,
+      icon: <ChartLine size="45px" />,
       iconColorClass: "bg-yellow-100 text-yellow-600",
     },
   ];
