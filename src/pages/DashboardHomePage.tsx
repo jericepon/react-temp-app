@@ -62,7 +62,7 @@ const DashboardHomePage = () => {
             </div>
           </div>
         </div>
-        <div className="bg-card h-[50%] w-full">
+        <div className="h-[50%] w-full">
           <DashboardSalesReport />
         </div>
       </div>
