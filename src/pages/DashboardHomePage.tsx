@@ -2,6 +2,7 @@ import DashboardBookings from "@/components/dashboard/DashboardBookings";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardPie from "@/components/dashboard/DashboardPie";
+import DashboardSalesReport from "@/components/dashboard/DashboardSalesReport";
 import DashboardStatCard from "@/components/dashboard/DashboardStatCard";
 import { CalendarCheck, ChartLine, DollarSignIcon, Luggage } from "lucide-react";
 import { ReactNode } from "react";
@@ -46,8 +47,8 @@ const DashboardHomePage = () => {
       <div className="flex grow flex-wrap gap-4 overflow-y-auto no-scrollbar">
         <div className="flex w-full space-x-4">
           {statCardData.map((stat, index) => (
-            <div className="w-1/4">
-              <DashboardStatCard {...stat} key={index} />
+            <div className="w-1/4" key={index}>
+              <DashboardStatCard {...stat} />
             </div>
           ))}
         </div>
@@ -62,7 +63,7 @@ const DashboardHomePage = () => {
           </div>
         </div>
         <div className="bg-card h-[50%] w-full">
-          <DashboardCard title="test" />
+          <DashboardSalesReport />
         </div>
       </div>
     </>

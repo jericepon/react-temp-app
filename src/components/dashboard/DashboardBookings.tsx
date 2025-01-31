@@ -83,9 +83,9 @@ const DashboardBookings = () => {
   return (
     <>
       <DashboardCard title="Dashboard" className="h-full">
-        {bookings.map((booking) => (
+        {bookings.map((booking, index) => (
           <div
-            key={booking.id}
+            key={index}
             className="flex gap-4 p-3 px-0 border-b last:border-b-0 justify-between"
           >
             <div
