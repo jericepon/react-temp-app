@@ -1,4 +1,4 @@
-import { getCabins } from "@/api/cabins";
+import { deleteCabin, getCabins } from "@/api/cabins";
 import {
   Table,
   TableBody,
@@ -7,11 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcn/table";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import DashboardCard from "../dashboard/DashboardCard";
 import { formatCurrency } from "@/lib/helper";
 import { Button } from "../shadcn/button";
 import { Delete, DeleteIcon, Tent, Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Toast } from "@radix-ui/react-toast";
 
 type Cabin = {
   id: number;
@@ -59,7 +61,7 @@ const CabinTable = () => {
           </Table>
         )}
         {isLoading && (
-          <div className="absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-white bg-opacity-70">
+          <div className="absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-background bg-opacity-70">
             <div className="size-20 animate-ping bg-primary fixed rounded-full"></div>
             <div className="size-16 animate-ping delay-150 bg-yellow-400 fixed rounded-full"></div>
             <div className="size-14 animate-ping delay-200 bg-yellow-400 fixed rounded-full"></div>
@@ -71,6 +73,19 @@ const CabinTable = () => {
 };
 
 CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
+  const queryClient = useQueryClient();
+  const { isPending, mutate } = useMutation({
+    mutationKey: ["deleteCabin", cabin.id],
+    mutationFn: deleteCabin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+    },
+    onError: (error: Error) => {
+      alert(error.message);
+    },
+  });
   return (
     <TableRow>
       <TableCell className="w-[200px]">
@@ -91,7 +106,12 @@ CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
         <span className="text-green-600 font-bold">{formatCurrency(cabin.discount)}</span>
       </TableCell>
       <TableCell className="w-16">
-        <Button size="sm" className="uppercase">
+        <Button
+          size="sm"
+          className="uppercase"
+          onClick={() => mutate(cabin.id)}
+          disabled={isPending}
+        >
           <Trash /> Delete
         </Button>
       </TableCell>
