@@ -9,9 +9,8 @@ const useIncrementAnimation = (targetValue: number, duration: number) => {
       if (!start) start = timestamp;
       const progress = timestamp - start;
       const increment = Math.min(progress / duration, 1) * targetValue;
-      setAnimatedValue(increment);
-      if (progress < duration)
-      {
+      setAnimatedValue(Math.floor(increment)); // Use Math.floor to return an integer value
+      if (progress < duration) {
         requestAnimationFrame(step);
       }
     };

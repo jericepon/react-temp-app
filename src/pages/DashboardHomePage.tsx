@@ -4,6 +4,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardPie from "@/components/dashboard/DashboardPie";
 import DashboardSalesReport from "@/components/dashboard/DashboardSalesReport";
 import DashboardStatCard from "@/components/dashboard/DashboardStatCard";
+import { Button } from "@/components/shadcn/button";
 import { CalendarCheck, ChartLine, DollarSignIcon, Luggage } from "lucide-react";
 import { ReactNode } from "react";
 
@@ -43,7 +44,7 @@ const DashboardHomePage = () => {
   ];
   return (
     <>
-      <DashboardHeader />
+      <DashboardHeader title="Dashboard" />
       <div className="flex grow flex-wrap gap-4 overflow-y-auto no-scrollbar">
         <div className="flex w-full space-x-4">
           {statCardData.map((stat, index) => (

@@ -8,6 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/shadcn/chart";
+import useIncrementAnimation from "@/hooks/use-increment-animation";
 import { useMemo } from "react";
 import { Label, Pie, PieChart } from "recharts";
 
@@ -72,7 +73,7 @@ const DashboardPie = () => {
                             y={viewBox.cy}
                             className="fill-foreground text-3xl font-bold"
                           >
-                            {totalVisitors.toLocaleString()}
+                            {useIncrementAnimation(totalVisitors, 1000).toLocaleString()}
                           </tspan>
                           {/* <tspan
                             x={viewBox.cx}

@@ -6,6 +6,7 @@ import { ModeToggle } from "./shadcn/mode-toggle";
 const AppHeader = () => {
   return (
     <header className="bg-card p-1 flex items-center p-4">
+      <div className="font-bold text-xl capitalize text-primary">The wild oasis</div>
       <nav className="flex items-center space-x-4 ml-auto">
         <div className="flex items-center space-x-3 mr-6">
           <Avatar>
@@ -16,7 +17,9 @@ const AppHeader = () => {
         <NavLink to="/">
           <UserIcon />
         </NavLink>
-        <ModeToggle className="rounded-full" />
+        <div className="cursor-pointer">
+          <ModeToggle className="rounded-full" />
+        </div>
         <NavLink to="/">
           <LogOutIcon />
         </NavLink>

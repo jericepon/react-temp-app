@@ -17,7 +17,7 @@ const DashboardCard = (props: PropType) => {
       {title ? (
         <CardContent className="grow">{children}</CardContent>
       ) : (
-        <div className="p-6 flex grow">{children}</div>
+        <CardContent className="grow pt-6">{children}</CardContent>
       )}
     </Card>
   );

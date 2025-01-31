@@ -12,7 +12,7 @@ import {
 import { ArrowRight, Calendar, Home, Settings, Tent, Users } from "lucide-react";
 import { NavLink } from "react-router";
 import { Button } from "./shadcn/button";
-
+import Logo from "@/assets/logo.png";
 const AppSidebar = () => {
   const { open, setOpen } = useSidebar();
   const items = [
@@ -52,12 +52,8 @@ const AppSidebar = () => {
       >
         <ArrowRight className={[!open ? "rotate-0" : "rotate-180", "transition-all"].join(" ")} />
       </Button>
-      <SidebarHeader className="text-center">
-        <img
-          src="https://ui-avatars.com/api/?name=The+Wild+Oasis"
-          className="max-w-16 m-auto w-full"
-        />
-        {open && <div className="font-bold text-xl capitalize">The wild oasis</div>}
+      <SidebarHeader className={["text-center transition-all", !open && "h-[72px]"].join(" ")}>
+        <img src={Logo} className="max-w-16 m-auto w-full" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
