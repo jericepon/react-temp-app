@@ -1,6 +1,8 @@
 import { supabase } from "@/api/supabase";
 import CabinTable from "@/components/cabin/CabinTable";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { Button } from "@/components/shadcn/button";
+import { Plus } from "lucide-react";
 
 const CabinsPage = () => {
   supabase
@@ -13,7 +15,11 @@ const CabinsPage = () => {
     });
   return (
     <>
-      <DashboardHeader title="All Cabins" />
+      <DashboardHeader title="All Cabins">
+        <Button>
+          <Plus />
+        </Button>
+      </DashboardHeader>
       <CabinTable />
     </>
   );

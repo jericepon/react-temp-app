@@ -7,13 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcn/table";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import DashboardCard from "../dashboard/DashboardCard";
-import { formatCurrency } from "@/lib/helper";
-import { Button } from "../shadcn/button";
-import { Delete, DeleteIcon, Tent, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Toast } from "@radix-ui/react-toast";
+import { formatCurrency } from "@/lib/helper";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Tent, Trash } from "lucide-react";
+import DashboardCard from "../dashboard/DashboardCard";
+import { Button } from "../shadcn/button";
 
 type Cabin = {
   id: number;
@@ -73,6 +72,7 @@ const CabinTable = () => {
 };
 
 CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
     mutationKey: ["deleteCabin", cabin.id],
@@ -81,9 +81,18 @@ CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
       });
+      toast({
+        title: "Success 🎉",
+        description: "Cabin deleted successfully",
+        variant: "success",
+      });
     },
     onError: (error: Error) => {
-      alert(error.message);
+      toast({
+        title: "Error ⚠️",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
   return (
