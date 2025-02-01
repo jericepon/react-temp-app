@@ -10,9 +10,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/helper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Tent, Trash } from "lucide-react";
+import { Check, Edit, Tent, Trash } from "lucide-react";
 import DashboardCard from "../dashboard/DashboardCard";
 import { Button } from "../shadcn/button";
+import { useEffect, useState } from "react";
 
 type Cabin = {
   id: number;
@@ -73,6 +74,8 @@ const CabinTable = () => {
 
 CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
   const { toast } = useToast();
+  const [deleteConfirmation, setConfirmation] = useState<boolean>(false);
+  const [countdownValue, setCountdownValue] = useState<number>(5);
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
     mutationKey: ["deleteCabin", cabin.id],
@@ -95,6 +98,28 @@ CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
       });
     },
   });
+  const handleDelete = () => {
+    setConfirmation(true);
+  };
+  const confirmDeletion = (id: number) => {
+    setConfirmation(false);
+    mutate(id);
+  };
+  useEffect(() => {
+    if (deleteConfirmation) {
+      const countdown = setInterval(() => {
+        setCountdownValue((prev) => {
+          if (prev === 1) {
+            clearInterval(countdown);
+            setConfirmation(false);
+            return 5;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(countdown);
+    }
+  }, [deleteConfirmation]);
   return (
     <TableRow>
       <TableCell className="w-[200px]">
@@ -115,14 +140,25 @@ CabinTable.Row = ({ cabin }: { cabin: Cabin }) => {
         <span className="text-green-600 font-bold">{formatCurrency(cabin.discount)}</span>
       </TableCell>
       <TableCell className="w-16">
-        <Button
-          size="sm"
-          className="uppercase"
-          onClick={() => mutate(cabin.id)}
-          disabled={isPending}
-        >
-          <Trash /> Delete
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            variant={deleteConfirmation ? "destructive" : "outline"}
+            size="sm"
+            className="uppercase hover:bg-destructive hover:text-destructive-foreground min-w-[90px]"
+            onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion(cabin.id))}
+            disabled={isPending}
+          >
+            {deleteConfirmation ? <Check /> : <Trash />}
+            {deleteConfirmation ? <span className="text-lg">{countdownValue}</span> : "Delete"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="uppercase hover:bg-primary hover:text-primary-foreground"
+          >
+            <Edit /> Edit
+          </Button>
+        </div>
       </TableCell>
     </TableRow>
   );
