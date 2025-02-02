@@ -1,10 +1,8 @@
 import DashboardBookings from "@/components/dashboard/DashboardBookings";
-import DashboardCard from "@/components/dashboard/DashboardCard";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardPie from "@/components/dashboard/DashboardPie";
 import DashboardSalesReport from "@/components/dashboard/DashboardSalesReport";
 import DashboardStatCard from "@/components/dashboard/DashboardStatCard";
-import { Button } from "@/components/shadcn/button";
 import { CalendarCheck, ChartLine, DollarSignIcon, Luggage } from "lucide-react";
 import { ReactNode } from "react";
 

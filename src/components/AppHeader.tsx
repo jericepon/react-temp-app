@@ -18,7 +18,7 @@ const AppHeader = () => {
           <UserIcon />
         </NavLink>
         <div className="cursor-pointer">
-          <ModeToggle className="rounded-full" />
+          <ModeToggle />
         </div>
         <NavLink to="/">
           <LogOutIcon />

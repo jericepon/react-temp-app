@@ -7,7 +7,7 @@ type CardPropType = {
   value?: number;
   iconColorClass?: string;
 };
-const DashboardStatCard: FC<CardPropType> = ({ icon: Icon, title, value, iconColorClass }) => {
+const DashboardStatCard: FC<CardPropType> = ({ icon: Icon, title, iconColorClass }) => {
   const animatedValue = useIncrementAnimation(100, 1000); // 2000ms duration for animation
 
   return (
