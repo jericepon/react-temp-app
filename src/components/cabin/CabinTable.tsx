@@ -9,14 +9,55 @@ import {
 } from "@/components/shadcn/table";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/helper";
+import { Cabin } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Edit, TagIcon, Tent, Trash } from "lucide-react";
+import { Check, CopyIcon, Edit, TagIcon, Tent, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardCard from "../dashboard/DashboardCard";
 import { Button } from "../shadcn/button";
-import { Cabin } from "@/types";
+import { useCreateCabin } from "@/hooks/use-create-cabin";
 
-const CabinTable = ({ onToggleEdit }: { onToggleEdit: (cabin: Cabin) => void }) => {
+type TablePropType = {
+  onToggleEdit: (cabin: Cabin) => void;
+};
+
+type RowPropType = {
+  cabin: Cabin;
+  onToggleEdit?: (cabin: Cabin) => void;
+  onDuplicateCabin?: (cabin: Cabin) => void;
+};
+
+const CabinTable = ({ onToggleEdit }: TablePropType) => {
+  const { createCabin, isSuccess, isError, error } = useCreateCabin();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const handleDuplicateCabin = (cabin: Cabin) => {
+    createCabin({
+      name: "Copy of " + cabin.name,
+      maxCapacity: cabin.maxCapacity,
+      regularPrice: cabin.regularPrice,
+      discount: cabin.discount,
+      image: cabin.image,
+      description: cabin.description,
+    });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      toast({
+        title: "🎉 Success",
+        description: "Cabin created successfully",
+        variant: "success",
+      });
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    isError && toast({ title: "⚠️ Error", description: error?.message, variant: "destructive" });
+  }, [isError]);
+
   const {
     isLoading,
     data: cabins,
@@ -45,7 +86,12 @@ const CabinTable = ({ onToggleEdit }: { onToggleEdit: (cabin: Cabin) => void }) 
             </TableHeader>
             <TableBody>
               {cabins.map((cabin) => (
-                <CabinTable.Row key={cabin.id} cabin={cabin} onToggleEdit={onToggleEdit} />
+                <CabinTable.Row
+                  key={cabin.id}
+                  cabin={cabin}
+                  onToggleEdit={onToggleEdit}
+                  onDuplicateCabin={handleDuplicateCabin}
+                />
               ))}
             </TableBody>
           </Table>
@@ -62,11 +108,11 @@ const CabinTable = ({ onToggleEdit }: { onToggleEdit: (cabin: Cabin) => void }) 
   );
 };
 
-CabinTable.Row = ({ cabin, onToggleEdit }: { cabin: Cabin, onToggleEdit?: (cabin: Cabin) => void }) => {
+CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin }: RowPropType) => {
   const { toast } = useToast();
   const [deleteConfirmation, setConfirmation] = useState<boolean>(false);
-  const [countdownValue, setCountdownValue] = useState<number>(5);
   const queryClient = useQueryClient();
+  const [countdownValue, setCountdownValue] = useState<number>(5);
   const { isPending, mutate } = useMutation({
     mutationKey: ["deleteCabin"],
     mutationFn: deleteCabin,
@@ -93,23 +139,19 @@ CabinTable.Row = ({ cabin, onToggleEdit }: { cabin: Cabin, onToggleEdit?: (cabin
   };
   const confirmDeletion = (cabin: Cabin) => {
     setConfirmation(false);
-    if (cabin.image)
-    {
+    if (cabin.image) {
       removeCabinImage(cabin.image).then(() => {
         mutate(cabin);
       });
-    } else
-    {
+    } else {
       mutate(cabin);
     }
   };
   useEffect(() => {
-    if (deleteConfirmation)
-    {
+    if (deleteConfirmation) {
       const countdown = setInterval(() => {
         setCountdownValue((prev) => {
-          if (prev === 1)
-          {
+          if (prev === 1) {
             clearInterval(countdown);
             setConfirmation(false);
             return 5;
@@ -143,24 +185,35 @@ CabinTable.Row = ({ cabin, onToggleEdit }: { cabin: Cabin, onToggleEdit?: (cabin
         </div>
       </TableCell>
       <TableCell className="w-16">
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <Button
-            variant={deleteConfirmation ? "destructive" : "outline"}
-            size="sm"
-            className="uppercase hover:bg-destructive hover:text-destructive-foreground min-w-[90px]"
+            variant={deleteConfirmation ? "success" : "outline"}
+            size="icon"
+            className={[
+              "uppercase",
+              deleteConfirmation && "hover:bg-success hover:text-success-foreground animate-pulse",
+              !deleteConfirmation && "hover:bg-destructive hover:text-destructive-foreground",
+            ].join(" ")}
             onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion(cabin))}
             disabled={isPending}
           >
             {deleteConfirmation ? <Check /> : <Trash />}
-            {deleteConfirmation ? <span className="text-lg">{countdownValue}</span> : "Delete"}
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             className="uppercase hover:bg-primary hover:text-primary-foreground"
             onClick={() => onToggleEdit && onToggleEdit(cabin)}
           >
-            <Edit /> Edit
+            <Edit />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="uppercase hover:bg-primary hover:text-primary-foreground"
+            onClick={() => onDuplicateCabin && onDuplicateCabin(cabin)}
+          >
+            <CopyIcon />
           </Button>
         </div>
       </TableCell>

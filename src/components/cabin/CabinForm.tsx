@@ -1,14 +1,20 @@
-import { createEditCabin, uploadCabbinImage } from "@/api/cabins";
+import { uploadCabbinImage } from "@/api/cabins";
+import { useCreateCabin } from "@/hooks/use-create-cabin";
 import { useToast } from "@/hooks/use-toast";
 import { Cabin } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertDialog } from "@radix-ui/react-alert-dialog";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormInput from "../FormInput";
-import { AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "../shadcn/alert-dialog";
+import {
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../shadcn/alert-dialog";
 import { Button } from "../shadcn/button";
 import { Form } from "../shadcn/form";
 
@@ -18,46 +24,32 @@ export const formSchema = z.object({
   regularPrice: z.string().min(1),
   discount: z.string().optional(),
   description: z.string().max(250).optional(),
-  image: z.string().refine((filePath) => {
-    const validExtensions = [".jpeg", ".jpg", ".png"];
-    const isValid = validExtensions.some((ext) => filePath.endsWith(ext));
-    if (!filePath) return true;
-    return isValid;
-  }, { message: "Only .jpg, .jpeg, and .png formats are supported." }).optional(),
+  image: z
+    .string()
+    .refine(
+      (filePath) => {
+        const validExtensions = [".jpeg", ".jpg", ".png"];
+        const isValid = validExtensions.some((ext) => filePath.endsWith(ext));
+        if (!filePath) return true;
+        return isValid;
+      },
+      { message: "Only .jpg, .jpeg, and .png formats are supported." }
+    )
+    .optional(),
 });
 
 type PropType = {
   onSuccess: () => void;
   onCancel: () => void;
   open?: boolean;
-  cabin?: Cabin,
+  cabin?: Cabin;
 };
 
 const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
+  const queryClient = useQueryClient();
+  const { isPending, createCabin, isSuccess, isError, error } = useCreateCabin();
   const { toast } = useToast();
   const [image, setImage] = useState<File | undefined>(undefined);
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: createEditCabin,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      setImage(undefined);
-      onSuccess();
-      toast({
-        title: "🎉 Success",
-        description: "Cabin created successfully",
-        variant: "success",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "⚠️ Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,11 +64,12 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
   });
 
   const handleOnSubmit = async (data: z.infer<typeof formSchema>) => {
-    if (image)
-    {
+    if (image) {
       uploadCabbinImage(image).then((res) => {
-        const imageurl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${res.fullPath}`;
-        mutate({
+        const imageurl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${
+          res.fullPath
+        }`;
+        createCabin({
           ...data,
           ...(cabin ? { id: cabin.id } : {}),
           maxCapacity: Number(data.maxCapacity),
@@ -86,9 +79,8 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
         } as any);
         setImage(undefined);
       });
-    } else
-    {
-      mutate({
+    } else {
+      createCabin({
         ...data,
         image: cabin ? cabin.image : "",
         ...(cabin ? { id: cabin.id } : {}),
@@ -100,31 +92,44 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
   };
 
   useEffect(() => {
-    if (cabin)
-    {
-      for (const key in form.formState.defaultValues)
-      {
-        if (key in cabin)
-        {
-          if (key === 'image' && cabin[key as keyof Cabin]) continue;
+    if (cabin) {
+      for (const key in form.formState.defaultValues) {
+        if (key in cabin) {
+          if (key === "image" && cabin[key as keyof Cabin]) continue;
           form.setValue(key as keyof z.infer<typeof formSchema>, String(cabin[key as keyof Cabin]));
         }
       }
     }
     return () => {
-      for (const key in form.formState.defaultValues)
-      {
-        form.setValue(key as keyof z.infer<typeof formSchema>, '');
+      for (const key in form.formState.defaultValues) {
+        form.setValue(key as keyof z.infer<typeof formSchema>, "");
       }
     };
   }, [cabin]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      setImage(undefined);
+      onSuccess();
+      toast({
+        title: "🎉 Success",
+        description: "Cabin created successfully",
+        variant: "success",
+      });
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    isError && toast({ title: "⚠️ Error", description: error?.message, variant: "destructive" });
+  }, [isError]);
 
   return (
     <>
       <AlertDialog open={open}>
         <AlertDialogContent className="max-w-[800px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>{cabin ? 'Edit' : 'New'} Cabin</AlertDialogTitle>
+            <AlertDialogTitle>{cabin ? "Edit" : "New"} Cabin</AlertDialogTitle>
             <AlertDialogDescription>
               Fill in the form below to create a new cabin.
             </AlertDialogDescription>
@@ -160,7 +165,14 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
                 placeholder="📝"
                 form={form}
               />
-              <FormInput type={"file"} label="Image" name="image" onFile={setImage} placeholder="🖼️" form={form} />
+              <FormInput
+                type={"file"}
+                label="Image"
+                name="image"
+                onFile={setImage}
+                placeholder="🖼️"
+                form={form}
+              />
               {cabin?.image}
               <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
                 <a className="btn btn-outline" onClick={onCancel}>

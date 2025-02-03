@@ -1,10 +1,10 @@
 export type Cabin = {
-  id: number;
+  id?: number;
   name: string;
   maxCapacity: number;
   regularPrice: number;
   discount: number;
   description: string;
   image?: string;
-  created_at: string;
+  created_at?: string;
 };
