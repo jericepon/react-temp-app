@@ -1,1 +1,1 @@
-# Centtralize hook to handle modals, toast etc
+# Centralized hook to handle modals, toast etc.
