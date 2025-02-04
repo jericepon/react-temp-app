@@ -52,7 +52,7 @@ const AppSidebar = () => {
       >
         <ArrowRight className={[!open ? "rotate-0" : "rotate-180", "transition-all"].join(" ")} />
       </Button>
-      <SidebarHeader className={["text-center transition-all", !open && "h-[72px]"].join(" ")}>
+      <SidebarHeader className={["text-center transition-all", "max-h-[72px] h-full"].join(" ")}>
         <img src={Logo} className="max-w-16 m-auto w-full" />
       </SidebarHeader>
       <SidebarContent>

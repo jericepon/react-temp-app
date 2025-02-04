@@ -1,4 +1,4 @@
-import { createEditCabin, getCabins, removeCabinImage } from "@/api/cabins";
+import { getCabins, removeCabinImage } from "@/api/cabins";
 import CabinForm from "@/components/cabin/CabinForm";
 import CabinTable from "@/components/cabin/CabinTable";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
@@ -18,6 +18,14 @@ const CabinsPage = () => {
   const { createCabin, isSuccess, isError, error } = useCreateCabin();
   const { deleteCabin, isSuccessDeleting, isErrorDeleting, errorDeleting } = useDeleteCabin();
   const queryClient = useQueryClient();
+
+  const config = [
+    { name: "image", label: "" },
+    { name: "name", label: "Cabin" },
+    { name: "capacity", label: "Capacity" },
+    { name: "price", label: "Price" },
+    { name: "discount", label: "Discount" },
+  ];
 
   const { isLoading, data: cabins } = useQuery({
     queryKey: ["cabins"],
@@ -66,20 +74,26 @@ const CabinsPage = () => {
   }, [isError, isErrorDeleting]);
 
   useEffect(() => {
-    if (isSuccess || isSuccessDeleting) {
+    if (isSuccess) {
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
       toast({
         title: "🎉 Success",
-        description: [
-          "Cabin",
-          isSuccess ? "created" : "",
-          isSuccessDeleting ? "deleted" : "",
-          "successfully",
-        ].join(" "),
+        description: "Cabin created successfully",
         variant: "success",
       });
     }
-  }, [isSuccess || isSuccessDeleting]);
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isSuccessDeleting) {
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      toast({
+        title: "🎉 Success",
+        description: "Cabin deleted successfully",
+        variant: "success",
+      });
+    }
+  }, [isSuccessDeleting]);
 
   return (
     <>
@@ -88,24 +102,26 @@ const CabinsPage = () => {
           <Plus />
         </Button>
       </DashboardHeader>
-      <CabinTable isLoading={isLoading} rows={cabins || []}>
-        {cabins &&
-          cabins.map((cabin) => (
-            <CabinTable.Row
-              key={cabin.id}
-              cabin={cabin}
-              onToggleEdit={() => handleOnToggleEdit(cabin)}
-              onDuplicateCabin={() => handleOnDuplicateCabin(cabin)}
-              onDelete={() => confirmDeletion(cabin)}
-            />
-          ))}
-      </CabinTable>
-      <CabinForm
-        onSuccess={handleOnCancel}
-        onCancel={handleOnCancel}
-        open={modalOpen}
-        cabin={cabinToEdit}
-      />
+      <div className="flex grow flex-wrap gap-4 overflow-hidden overflow-y-auto no-scrollbar">
+        <CabinTable isLoading={isLoading} rows={cabins || []} config={config}>
+          {cabins &&
+            cabins.map((cabin) => (
+              <CabinTable.Row
+                key={cabin.id}
+                cabin={cabin}
+                onToggleEdit={() => handleOnToggleEdit(cabin)}
+                onDuplicateCabin={() => handleOnDuplicateCabin(cabin)}
+                onDelete={() => confirmDeletion(cabin)}
+              />
+            ))}
+        </CabinTable>
+        <CabinForm
+          onSuccess={handleOnCancel}
+          onClose={handleOnCancel}
+          open={modalOpen}
+          cabin={cabinToEdit}
+        />
+      </div>
     </>
   );
 };

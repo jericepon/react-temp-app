@@ -3,13 +3,13 @@ import { useCreateCabin } from "@/hooks/use-create-cabin";
 import { useToast } from "@/hooks/use-toast";
 import { Cabin } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertDialog } from "@radix-ui/react-alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormInput from "../FormInput";
 import {
+  AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogHeader,
@@ -17,6 +17,7 @@ import {
 } from "../shadcn/alert-dialog";
 import { Button } from "../shadcn/button";
 import { Form } from "../shadcn/form";
+import { X } from "lucide-react";
 
 export const formSchema = z.object({
   name: z.string().min(5).max(50),
@@ -40,12 +41,12 @@ export const formSchema = z.object({
 
 type PropType = {
   onSuccess: () => void;
-  onCancel: () => void;
+  onClose: () => void;
   open?: boolean;
   cabin?: Cabin;
 };
 
-const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
+const CabinForm = ({ onClose, onSuccess, open, cabin }: PropType) => {
   const queryClient = useQueryClient();
   const { isCreating, createCabin, isSuccess, isError, error } = useCreateCabin();
   const { toast } = useToast();
@@ -129,7 +130,12 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
       <AlertDialog open={open}>
         <AlertDialogContent className="max-w-[800px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>{cabin ? "Edit" : "New"} Cabin</AlertDialogTitle>
+            <AlertDialogTitle className="flex justify-between">
+              <span>{cabin ? "Edit" : "New"} Cabin</span>
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X />
+              </Button>
+            </AlertDialogTitle>
             <AlertDialogDescription>
               Fill in the form below to create a new cabin.
             </AlertDialogDescription>
@@ -174,7 +180,7 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
                 form={form}
               />
               <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
-                <a className="btn btn-outline" onClick={onCancel}>
+                <a className="btn btn-outline" onClick={onClose}>
                   Cancel
                 </a>
                 <Button type="submit" disabled={isCreating}>

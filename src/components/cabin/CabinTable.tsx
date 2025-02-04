@@ -1,4 +1,3 @@
-import { deleteCabin, getCabins, removeCabinImage } from "@/api/cabins";
 import {
   Table,
   TableBody,
@@ -7,22 +6,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcn/table";
-import { useCreateCabin } from "@/hooks/use-create-cabin";
-import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/helper";
 import { Cabin } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, CopyIcon, Edit, TagIcon, Tent, Trash } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import DashboardCard from "../dashboard/DashboardCard";
 import { Button } from "../shadcn/button";
 
+type TableConfigType = {
+  label?: string;
+};
 type TablePropType = {
   children?: ReactNode;
   isLoading?: boolean;
   rows?: Cabin[];
+  config?: TableConfigType[];
 };
-
 type RowPropType = {
   cabin: Cabin;
   onToggleEdit?: () => void;
@@ -30,36 +29,30 @@ type RowPropType = {
   onDelete?: () => void;
 };
 
-const CabinTable = ({ children, rows, isLoading }: TablePropType) => {
+const CabinTable = ({ children, rows, isLoading, config }: TablePropType) => {
   return (
-    <div className="w-full grow">
-      <DashboardCard
-        className={["relative min-h-[400px]", isLoading && "overflow-hidden"].join(" ")}
-      >
-        {!isLoading && rows && (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead />
-                <TableHead>Cabin</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Discount</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>{children}</TableBody>
-          </Table>
-        )}
-        {isLoading && (
-          <div className="absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-background bg-opacity-70">
-            <div className="size-20 animate-ping bg-primary fixed rounded-full"></div>
-            <div className="size-16 animate-ping delay-150 bg-yellow-400 fixed rounded-full"></div>
-            <div className="size-14 animate-ping delay-200 bg-yellow-400 fixed rounded-full"></div>
-          </div>
-        )}
-      </DashboardCard>
-    </div>
+    <DashboardCard className={["relative min-h-[400px]", isLoading && "overflow-hidden"].join(" ")}>
+      {!isLoading && rows && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {config?.map((item, index) => (
+                <TableHead key={index}>{item.label}</TableHead>
+              ))}
+              <TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody>{children}</TableBody>
+        </Table>
+      )}
+      {isLoading && (
+        <div className="absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-background bg-opacity-70">
+          <div className="size-20 animate-ping bg-primary fixed rounded-full"></div>
+          <div className="size-16 animate-ping delay-150 bg-yellow-400 fixed rounded-full"></div>
+          <div className="size-14 animate-ping delay-200 bg-yellow-400 fixed rounded-full"></div>
+        </div>
+      )}
+    </DashboardCard>
   );
 };
 
@@ -72,7 +65,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropTy
   };
   const confirmDeletion = () => {
     setConfirmation(false);
-    onDelete && onDelete();
+    onDelete?.();
   };
   useEffect(() => {
     if (deleteConfirmation) {
@@ -129,7 +122,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropTy
             variant="outline"
             size="icon"
             className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onToggleEdit && onToggleEdit()}
+            onClick={() => onToggleEdit?.()}
           >
             <Edit />
           </Button>
@@ -137,7 +130,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropTy
             variant="outline"
             size="icon"
             className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onDuplicateCabin && onDuplicateCabin()}
+            onClick={() => onDuplicateCabin?.()}
           >
             <CopyIcon />
           </Button>
