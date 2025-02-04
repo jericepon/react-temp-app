@@ -17,7 +17,6 @@ const FormInput = (props: PropType) => {
       control={form.control}
       name={name}
       render={({ field }) => (
-
         <FormItem>
           {label && <FormLabel>{label}</FormLabel>}
           {type === "text" ? (
@@ -36,7 +35,12 @@ const FormInput = (props: PropType) => {
           )}
           {type === "number" ? (
             <FormControl>
-              <Input type="number" placeholder={placeholder} {...field} />
+              <Input
+                type="number"
+                placeholder={placeholder}
+                {...field}
+                {...form.register(field.name, { valueAsNumber: true })}
+              />
             </FormControl>
           ) : (
             ""
@@ -57,19 +61,27 @@ const FormInput = (props: PropType) => {
                   placeholder={placeholder}
                   {...field}
                   onChange={(e) => {
-                    if (e.target.files)
-                    {
+                    if (e.target.files) {
                       form.setValue(name, e.target.files[0]);
-                      onFile && onFile(e.target.files[0])
+                      onFile && onFile(e.target.files[0]);
                     }
 
                     field.onChange(e);
                   }}
                 />
-                {field.value && <Button variant={"link"} size={'sm'} className="rounded-l-none" onClick={(e) => {
-                  form.setValue(name, '');
-                  field.onChange(e);
-                }}>CLEAR</Button>}
+                {field.value && (
+                  <Button
+                    variant={"link"}
+                    size={"sm"}
+                    className="rounded-l-none"
+                    onClick={(e) => {
+                      form.setValue(name, "");
+                      field.onChange(e);
+                    }}
+                  >
+                    CLEAR
+                  </Button>
+                )}
               </div>
             </FormControl>
           ) : (

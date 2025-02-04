@@ -8,3 +8,17 @@ export async function getSettings() {
   }
   return data;
 }
+
+export async function updateSettings(settings: any) {
+  const { data, error } = await supabase
+    .from('settings')
+    .update(settings)
+    .eq('id', 1)
+    .single()
+
+  if (error)
+  {
+    throw new Error(error.message);
+  }
+  return data;
+}

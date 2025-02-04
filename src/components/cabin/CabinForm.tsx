@@ -20,9 +20,9 @@ import { Form } from "../shadcn/form";
 
 export const formSchema = z.object({
   name: z.string().min(5).max(50),
-  maxCapacity: z.string().min(1),
-  regularPrice: z.string().min(1),
-  discount: z.string().optional(),
+  maxCapacity: z.number().nullable(),
+  regularPrice: z.number().nullable(),
+  discount: z.number().optional().nullable(),
   description: z.string().max(250).optional(),
   image: z
     .string()
@@ -47,7 +47,7 @@ type PropType = {
 
 const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
   const queryClient = useQueryClient();
-  const { isPending, createCabin, isSuccess, isError, error } = useCreateCabin();
+  const { isCreating, createCabin, isSuccess, isError, error } = useCreateCabin();
   const { toast } = useToast();
   const [image, setImage] = useState<File | undefined>(undefined);
 
@@ -55,9 +55,9 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      maxCapacity: "",
-      regularPrice: "",
-      discount: "",
+      maxCapacity: 0,
+      regularPrice: 0,
+      discount: 0,
       description: "",
       image: "",
     },
@@ -173,12 +173,11 @@ const CabinForm: FC<PropType> = ({ onCancel, onSuccess, open, cabin }) => {
                 placeholder="🖼️"
                 form={form}
               />
-              {cabin?.image}
               <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
                 <a className="btn btn-outline" onClick={onCancel}>
                   Cancel
                 </a>
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" disabled={isCreating}>
                   Submit
                 </Button>
               </div>

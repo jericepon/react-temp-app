@@ -7,72 +7,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcn/table";
+import { useCreateCabin } from "@/hooks/use-create-cabin";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/helper";
 import { Cabin } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, CopyIcon, Edit, TagIcon, Tent, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import DashboardCard from "../dashboard/DashboardCard";
 import { Button } from "../shadcn/button";
-import { useCreateCabin } from "@/hooks/use-create-cabin";
 
 type TablePropType = {
-  onToggleEdit: (cabin: Cabin) => void;
+  children?: ReactNode;
+  isLoading?: boolean;
+  rows?: Cabin[];
 };
 
 type RowPropType = {
   cabin: Cabin;
-  onToggleEdit?: (cabin: Cabin) => void;
-  onDuplicateCabin?: (cabin: Cabin) => void;
+  onToggleEdit?: () => void;
+  onDuplicateCabin?: () => void;
+  onDelete?: () => void;
 };
 
-const CabinTable = ({ onToggleEdit }: TablePropType) => {
-  const { createCabin, isSuccess, isError, error } = useCreateCabin();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const handleDuplicateCabin = (cabin: Cabin) => {
-    createCabin({
-      name: "Copy of " + cabin.name,
-      maxCapacity: cabin.maxCapacity,
-      regularPrice: cabin.regularPrice,
-      discount: cabin.discount,
-      image: cabin.image,
-      description: cabin.description,
-    });
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      toast({
-        title: "🎉 Success",
-        description: "Cabin created successfully",
-        variant: "success",
-      });
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    isError && toast({ title: "⚠️ Error", description: error?.message, variant: "destructive" });
-  }, [isError]);
-
-  const {
-    isLoading,
-    data: cabins,
-    // error,
-  } = useQuery({
-    queryKey: ["cabins"],
-    queryFn: getCabins,
-  });
-
+const CabinTable = ({ children, rows, isLoading }: TablePropType) => {
   return (
     <div className="w-full grow">
       <DashboardCard
         className={["relative min-h-[400px]", isLoading && "overflow-hidden"].join(" ")}
       >
-        {!isLoading && cabins && (
+        {!isLoading && rows && (
           <Table>
             <TableHeader>
               <TableRow>
@@ -84,16 +48,7 @@ const CabinTable = ({ onToggleEdit }: TablePropType) => {
                 <TableHead />
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {cabins.map((cabin) => (
-                <CabinTable.Row
-                  key={cabin.id}
-                  cabin={cabin}
-                  onToggleEdit={onToggleEdit}
-                  onDuplicateCabin={handleDuplicateCabin}
-                />
-              ))}
-            </TableBody>
+            <TableBody>{children}</TableBody>
           </Table>
         )}
         {isLoading && (
@@ -108,44 +63,16 @@ const CabinTable = ({ onToggleEdit }: TablePropType) => {
   );
 };
 
-CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin }: RowPropType) => {
-  const { toast } = useToast();
+CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropType) => {
   const [deleteConfirmation, setConfirmation] = useState<boolean>(false);
-  const queryClient = useQueryClient();
   const [countdownValue, setCountdownValue] = useState<number>(5);
-  const { isPending, mutate } = useMutation({
-    mutationKey: ["deleteCabin"],
-    mutationFn: deleteCabin,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      toast({
-        title: "Success 🎉",
-        description: "Cabin deleted successfully",
-        variant: "success",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error ⚠️",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+
   const handleDelete = () => {
     setConfirmation(true);
   };
-  const confirmDeletion = (cabin: Cabin) => {
+  const confirmDeletion = () => {
     setConfirmation(false);
-    if (cabin.image) {
-      removeCabinImage(cabin.image).then(() => {
-        mutate(cabin);
-      });
-    } else {
-      mutate(cabin);
-    }
+    onDelete && onDelete();
   };
   useEffect(() => {
     if (deleteConfirmation) {
@@ -194,8 +121,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin }: RowPropType) => {
               deleteConfirmation && "hover:bg-success hover:text-success-foreground animate-pulse",
               !deleteConfirmation && "hover:bg-destructive hover:text-destructive-foreground",
             ].join(" ")}
-            onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion(cabin))}
-            disabled={isPending}
+            onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion())}
           >
             {deleteConfirmation ? <Check /> : <Trash />}
           </Button>
@@ -203,7 +129,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin }: RowPropType) => {
             variant="outline"
             size="icon"
             className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onToggleEdit && onToggleEdit(cabin)}
+            onClick={() => onToggleEdit && onToggleEdit()}
           >
             <Edit />
           </Button>
@@ -211,7 +137,7 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin }: RowPropType) => {
             variant="outline"
             size="icon"
             className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onDuplicateCabin && onDuplicateCabin(cabin)}
+            onClick={() => onDuplicateCabin && onDuplicateCabin()}
           >
             <CopyIcon />
           </Button>

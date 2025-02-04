@@ -2,9 +2,9 @@ import { createEditCabin } from "@/api/cabins";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateCabin = () => {
-  const { mutate: createCabin, isPending, isSuccess, isError, error } = useMutation({
+  const { mutate: createCabin, isPending: isCreating, isSuccess, isError, error } = useMutation({
     mutationFn: createEditCabin,
   });
 
-  return { createCabin, isPending, isError, isSuccess, error };
+  return { createCabin, isCreating, isError, isSuccess, error };
 }
