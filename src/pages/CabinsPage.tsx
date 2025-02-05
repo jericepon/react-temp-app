@@ -103,17 +103,16 @@ const CabinsPage = () => {
         </Button>
       </DashboardHeader>
       <div className="flex grow flex-wrap gap-4 overflow-hidden overflow-y-auto no-scrollbar">
-        <CabinTable isLoading={isLoading} rows={cabins || []} config={config}>
-          {cabins &&
-            cabins.map((cabin) => (
-              <CabinTable.Row
-                key={cabin.id}
-                cabin={cabin}
-                onToggleEdit={() => handleOnToggleEdit(cabin)}
-                onDuplicateCabin={() => handleOnDuplicateCabin(cabin)}
-                onDelete={() => confirmDeletion(cabin)}
-              />
-            ))}
+        <CabinTable isLoading={isLoading} config={config}>
+          {cabins?.map((cabin) => (
+            <CabinTable.Row
+              key={cabin.id}
+              row={cabin}
+              onToggleEdit={() => handleOnToggleEdit(cabin)}
+              onDuplicateCabin={() => handleOnDuplicateCabin(cabin)}
+              onDelete={() => confirmDeletion(cabin)}
+            />
+          ))}
         </CabinTable>
         <CabinForm
           onSuccess={handleOnCancel}

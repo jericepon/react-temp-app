@@ -19,20 +19,20 @@ type TableConfigType = {
 type TablePropType = {
   children?: ReactNode;
   isLoading?: boolean;
-  rows?: Cabin[];
   config?: TableConfigType[];
+  render?: (cabin: Cabin) => ReactNode;
 };
 type RowPropType = {
-  cabin: Cabin;
+  row?: Cabin;
   onToggleEdit?: () => void;
   onDuplicateCabin?: () => void;
   onDelete?: () => void;
 };
 
-const CabinTable = ({ children, rows, isLoading, config }: TablePropType) => {
+const CabinTable = ({ children, isLoading, config }: TablePropType) => {
   return (
     <DashboardCard className={["relative min-h-[400px]", isLoading && "overflow-hidden"].join(" ")}>
-      {!isLoading && rows && (
+      {!isLoading && (
         <Table>
           <TableHeader>
             <TableRow>
@@ -56,7 +56,7 @@ const CabinTable = ({ children, rows, isLoading, config }: TablePropType) => {
   );
 };
 
-CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropType) => {
+CabinTable.Row = ({ row, onToggleEdit, onDuplicateCabin, onDelete }: RowPropType) => {
   const [deleteConfirmation, setConfirmation] = useState<boolean>(false);
   const [countdownValue, setCountdownValue] = useState<number>(5);
 
@@ -83,60 +83,63 @@ CabinTable.Row = ({ cabin, onToggleEdit, onDuplicateCabin, onDelete }: RowPropTy
     }
   }, [deleteConfirmation]);
   return (
-    <TableRow>
-      <TableCell className="w-[200px]">
-        <div className="overflow-hidden rounded-xl max-w-32 h-20">
-          {cabin.image ? (
-            <img src={cabin.image} alt={cabin.name} className="max-w-32" />
-          ) : (
-            <div className="max-w-32 h-20 text-foreground bg-muted flex items-center justify-center">
-              <Tent />
-            </div>
-          )}
-        </div>
-      </TableCell>
-      <TableCell>{cabin.name}</TableCell>
-      <TableCell>Up to {cabin.maxCapacity} guests</TableCell>
-      <TableCell>{formatCurrency(cabin.regularPrice)}</TableCell>
-      <TableCell>
-        <div className="text-green-600 font-bold flex items-center">
-          {cabin.discount && formatCurrency(cabin.discount)}
-          {cabin.discount && <TagIcon className="inlinesi w-4 ml-1" />}
-        </div>
-      </TableCell>
-      <TableCell className="w-16">
-        <div className="flex gap-2">
-          <Button
-            variant={deleteConfirmation ? "success" : "outline"}
-            size="icon"
-            className={[
-              "uppercase",
-              deleteConfirmation && "hover:bg-success hover:text-success-foreground animate-pulse",
-              !deleteConfirmation && "hover:bg-destructive hover:text-destructive-foreground",
-            ].join(" ")}
-            onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion())}
-          >
-            {deleteConfirmation ? <Check /> : <Trash />}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onToggleEdit?.()}
-          >
-            <Edit />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="uppercase hover:bg-primary hover:text-primary-foreground"
-            onClick={() => onDuplicateCabin?.()}
-          >
-            <CopyIcon />
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
+    row && (
+      <TableRow>
+        <TableCell className="w-[200px]">
+          <div className="overflow-hidden rounded-xl max-w-32 h-20">
+            {row.image ? (
+              <img src={row.image} alt={row.name} className="max-w-32" />
+            ) : (
+              <div className="max-w-32 h-20 text-foreground bg-muted flex items-center justify-center">
+                <Tent />
+              </div>
+            )}
+          </div>
+        </TableCell>
+        <TableCell>{row.name}</TableCell>
+        <TableCell>Up to {row.maxCapacity} guests</TableCell>
+        <TableCell>{formatCurrency(row.regularPrice)}</TableCell>
+        <TableCell>
+          <div className="text-green-600 font-bold flex items-center">
+            {row.discount && formatCurrency(row.discount)}
+            {row.discount && <TagIcon className="inlinesi w-4 ml-1" />}
+          </div>
+        </TableCell>
+        <TableCell className="w-16">
+          <div className="flex gap-2">
+            <Button
+              variant={deleteConfirmation ? "success" : "outline"}
+              size="icon"
+              className={[
+                "uppercase",
+                deleteConfirmation &&
+                  "hover:bg-success hover:text-success-foreground animate-pulse",
+                !deleteConfirmation && "hover:bg-destructive hover:text-destructive-foreground",
+              ].join(" ")}
+              onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion())}
+            >
+              {deleteConfirmation ? <Check /> : <Trash />}
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="uppercase hover:bg-primary hover:text-primary-foreground"
+              onClick={() => onToggleEdit?.()}
+            >
+              <Edit />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="uppercase hover:bg-primary hover:text-primary-foreground"
+              onClick={() => onDuplicateCabin?.()}
+            >
+              <CopyIcon />
+            </Button>
+          </div>
+        </TableCell>
+      </TableRow>
+    )
   );
 };
 
