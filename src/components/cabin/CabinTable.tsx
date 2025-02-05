@@ -11,7 +11,16 @@ import { Cabin } from "@/types";
 import { Check, CopyIcon, Edit, TagIcon, Tent, Trash } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import DashboardCard from "../dashboard/DashboardCard";
+import { AlertDialogFooter, AlertDialogHeader } from "../shadcn/alert-dialog";
 import { Button } from "../shadcn/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "../shadcn/context-menu";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../shadcn/dialog";
 
 type TableConfigType = {
   label?: string;
@@ -58,56 +67,49 @@ const CabinTable = ({ children, isLoading, config }: TablePropType) => {
 
 CabinTable.Row = ({ row, onToggleEdit, onDuplicateCabin, onDelete }: RowPropType) => {
   const [deleteConfirmation, setConfirmation] = useState<boolean>(false);
-  const [countdownValue, setCountdownValue] = useState<number>(5);
-
   const handleDelete = () => {
     setConfirmation(true);
   };
+
   const confirmDeletion = () => {
     setConfirmation(false);
     onDelete?.();
   };
-  useEffect(() => {
-    if (deleteConfirmation) {
-      const countdown = setInterval(() => {
-        setCountdownValue((prev) => {
-          if (prev === 1) {
-            clearInterval(countdown);
-            setConfirmation(false);
-            return 5;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(countdown);
-    }
-  }, [deleteConfirmation]);
+
   return (
     row && (
-      <TableRow>
-        <TableCell className="w-[200px]">
-          <div className="overflow-hidden rounded-xl max-w-32 h-20">
-            {row.image ? (
-              <img src={row.image} alt={row.name} className="max-w-32" />
-            ) : (
-              <div className="max-w-32 h-20 text-foreground bg-muted flex items-center justify-center">
-                <Tent />
-              </div>
-            )}
-          </div>
-        </TableCell>
-        <TableCell>{row.name}</TableCell>
-        <TableCell>Up to {row.maxCapacity} guests</TableCell>
-        <TableCell>{formatCurrency(row.regularPrice)}</TableCell>
-        <TableCell>
-          <div className="text-green-600 font-bold flex items-center">
-            {row.discount && formatCurrency(row.discount)}
-            {row.discount && <TagIcon className="inlinesi w-4 ml-1" />}
-          </div>
-        </TableCell>
-        <TableCell className="w-16">
-          <div className="flex gap-2">
-            <Button
+      <>
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <TableRow>
+              <TableCell className="w-[200px]">
+                <div className="overflow-hidden rounded-xl max-w-32 h-20">
+                  {row.image ? (
+                    <img src={row.image} alt={row.name} className="max-w-32" />
+                  ) : (
+                    <div className="max-w-32 h-20 text-foreground bg-muted flex items-center justify-center">
+                      <Tent />
+                    </div>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>Up to {row.maxCapacity} guests</TableCell>
+              <TableCell>{formatCurrency(row.regularPrice)}</TableCell>
+              <TableCell>
+                <div className="text-green-600 font-bold flex items-center">
+                  {row.discount && formatCurrency(row.discount)}
+                  {row.discount && <TagIcon className="inlinesi w-4 ml-1" />}
+                </div>
+              </TableCell>
+            </TableRow>
+          </ContextMenuTrigger>
+          <ContextMenuContent
+            sticky="always"
+            className="w-64"
+            data-state={deleteConfirmation && "open"}
+          >
+            {/* <Button
               variant={deleteConfirmation ? "success" : "outline"}
               size="icon"
               className={[
@@ -135,10 +137,46 @@ CabinTable.Row = ({ row, onToggleEdit, onDuplicateCabin, onDelete }: RowPropType
               onClick={() => onDuplicateCabin?.()}
             >
               <CopyIcon />
-            </Button>
-          </div>
-        </TableCell>
-      </TableRow>
+            </Button> */}
+            <ContextMenuItem onClick={() => onToggleEdit?.()}>
+              Edit
+              <ContextMenuShortcut>
+                <Edit />
+              </ContextMenuShortcut>
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => onDuplicateCabin?.()}>
+              Duplicate
+              <ContextMenuShortcut>
+                <CopyIcon />
+              </ContextMenuShortcut>
+            </ContextMenuItem>
+            <ContextMenuItem
+              onClick={() => (!deleteConfirmation ? handleDelete() : confirmDeletion())}
+              className="cursor-pointer"
+            >
+              {deleteConfirmation ? "Confirm" : "Delete"}
+              <ContextMenuShortcut>
+                {deleteConfirmation ? <Check /> : <Trash />}
+              </ContextMenuShortcut>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+        <Dialog open={deleteConfirmation} onOpenChange={(val) => setConfirmation(val)}>
+          <DialogContent className="sm:max-w-[425px]">
+            <AlertDialogHeader>
+              <DialogTitle>⚠️ Delete cabin</DialogTitle>
+            </AlertDialogHeader>
+            <DialogDescription className="p-4 text-center">
+              Are you sure you want to delete this cabin?
+            </DialogDescription>
+            <AlertDialogFooter>
+              <Button type="submit" className="mx-auto" onClick={() => confirmDeletion()}>
+                Confirm
+              </Button>
+            </AlertDialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     )
   );
 };
